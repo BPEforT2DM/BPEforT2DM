@@ -790,8 +790,7 @@
 
     <script>
         // --- CENTRAL GOOGLE SHEETS CONFIGURATION ---
-        // Paste your deployed Google Apps Script Web App URL below:
-        const GOOGLE_SCRIPT_URL = "";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxu4_NDJ24MPJ4ItKBP_kg0Y9VZV4ng9L3MYEdzLFilQf5IsMxNAFjnSa0ARwm25XWamA/exec";
 
         // Default to current month for filters
         const currentMonth = new Date().toISOString().slice(0, 7);
@@ -826,6 +825,31 @@
         }
 
         // --- CENTRAL FETCH & SYNC LOGIC ---
+        function groupArrayByClinic(list) {
+            const grouped = {};
+            if (!Array.isArray(list)) return grouped;
+            list.forEach(item => {
+                const cid = item.clinicId || item.clinic || item.ClinicID || item.clinic_id || '';
+                if (!cid) return;
+                if (!grouped[cid]) grouped[cid] = [];
+                grouped[cid].push({
+                    id: item.id || Date.now(),
+                    tarikh: item.tarikh || item.Tarikh || item.date || '',
+                    nama: item.nama || item.Nama || item.patientName || '',
+                    ic: item.ic || item.IC || item.icNumber || '',
+                    rujukan: item.rujukan || item.Rujukan || '',
+                    rn: item.rn || item.RN || '',
+                    umur: item.umur || item.Umur || '',
+                    saringan: item.saringan || item.Saringan || '',
+                    pakarPerio: item.pakarPerio || item.PakarPerio || item['Rujukan Pakar Periodontik'] || '',
+                    pakarLain: item.pakarLain || item.PakarLain || item['Rujukan Pakar Lain'] || '',
+                    selesai: item.selesai || item.Selesai || item['Kes Selesai'] || '',
+                    pegawai: item.pegawai || item.Pegawai || item.officer || ''
+                });
+            });
+            return grouped;
+        }
+
         async function fetchCentralData() {
             if (!GOOGLE_SCRIPT_URL) {
                 centralData.kk = getLocalKkData();
@@ -837,9 +861,13 @@
                 const response = await fetch(GOOGLE_SCRIPT_URL);
                 if (response.ok) {
                     const result = await response.json();
-                    if (result && result.status === 'success') {
-                        centralData.kk = result.kk || {};
-                        centralData.kp = result.kp || {};
+                    if (result) {
+                        const rawKk = result.kk || result['Klinik Kesihatan'] || result.KK_Screening || {};
+                        const rawKp = result.kp || result['Klinik Pergigian'] || result.KP_Screening || {};
+                        
+                        centralData.kk = Array.isArray(rawKk) ? groupArrayByClinic(rawKk) : rawKk;
+                        centralData.kp = Array.isArray(rawKp) ? groupArrayByClinic(rawKp) : rawKp;
+
                         saveLocalKkData(centralData.kk);
                         saveLocalKpData(centralData.kp);
                     }
@@ -936,6 +964,7 @@
             
             const formData = {
                 type: 'kk',
+                sheet: 'Klinik Kesihatan',
                 clinicId: clinicId,
                 id: Date.now(),
                 tarikh: document.getElementById('kk-tarikh').value,
@@ -958,7 +987,7 @@
             this.reset();
             document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
             
-            // Re-fetch for live sync and render
+            // Re-fetch live cloud records immediately after form submission
             await fetchCentralData();
             renderKK(clinicId);
             
@@ -1070,6 +1099,7 @@
             
             const formData = {
                 type: 'kp',
+                sheet: 'Klinik Pergigian',
                 clinicId: clinicId,
                 id: Date.now(),
                 tarikh: document.getElementById('f-tarikh').value,
@@ -1097,7 +1127,7 @@
             this.reset();
             document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
             
-            // Re-fetch for live sync and render
+            // Re-fetch live cloud records immediately after form submission
             await fetchCentralData();
             renderKP(clinicId);
             
