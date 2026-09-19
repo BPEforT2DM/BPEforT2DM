@@ -797,6 +797,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyDQ_fxZ934agTjbURAe5tXdc2RvlM3EqkA",
             authDomain: "bpefort2dm-b520b.firebaseapp.com",
+            databaseURL: "https://bpefort2dm-b520b-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "bpefort2dm-b520b",
             storageBucket: "bpefort2dm-b520b.firebasestorage.app",
             messagingSenderId: "91932469385",
@@ -889,16 +890,20 @@
 
         document.getElementById('kk-screening-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const clinicId = document.getElementById('kk-select').value;
-            if (!clinicId) return;
 
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            
+            const form = this;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // --- Clinic dropdown validation (BEFORE disabling button) ---
+            const clinicId = document.getElementById('kk-select').value;
+            if (!clinicId || clinicId === '' || clinicId === 'select') {
+                alert('Sila pilih Klinik Kesihatan terlebih dahulu!');
+                return;
+            }
+
             submitBtn.disabled = true;
-            submitBtn.textContent = "Saving...";
-            
+            submitBtn.textContent = 'Saving...';
+
             const formData = {
                 clinicId: clinicId,
                 tarikh: document.getElementById('kk-tarikh').value,
@@ -909,22 +914,26 @@
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
 
-            // Push to Firebase Realtime Database under screenings/kk/{clinicId}
-            db.ref('screenings/kk/' + clinicId).push(formData, (error) => {
+            // Push to Firebase — completion callback always re-enables button
+            db.ref('screenings/kk/' + clinicId).push(formData, function(error) {
                 submitBtn.disabled = false;
                 if (error) {
-                    alert("Error saving record to Firebase: " + error.message);
-                    submitBtn.textContent = originalText;
+                    alert('Gagal menyimpan rekod: ' + error.message);
+                    submitBtn.textContent = 'Submit Record';
                 } else {
-                    this.reset();
+                    form.reset();
                     document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
-                    submitBtn.textContent = "✓ Saved Successfully";
-                    submitBtn.style.background = "#28a745";
-                    setTimeout(() => {
-                        submitBtn.textContent = originalText;
-                        submitBtn.style.background = "var(--accent-blue)";
+                    submitBtn.textContent = '✓ Saved Successfully';
+                    submitBtn.style.background = '#28a745';
+                    setTimeout(function() {
+                        submitBtn.textContent = 'Submit Record';
+                        submitBtn.style.background = 'var(--accent-blue)';
                     }, 2000);
                 }
+            }).catch(function(err) {
+                alert('Ralat Rangkaian/Database: ' + err.message);
+                submitBtn.textContent = 'Submit Record';
+                submitBtn.disabled = false;
             });
         });
 
@@ -1029,19 +1038,23 @@
         // Form Submit KP
         document.getElementById('screening-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const clinicId = document.getElementById('kp-select').value;
-            if (!clinicId) return;
 
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
+            const form = this;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // --- Clinic dropdown validation (BEFORE disabling button) ---
+            const clinicId = document.getElementById('kp-select').value;
+            if (!clinicId || clinicId === '' || clinicId === 'select') {
+                alert('Sila pilih Klinik Pergigian terlebih dahulu!');
+                return;
+            }
 
             submitBtn.disabled = true;
-            submitBtn.textContent = "Saving...";
+            submitBtn.textContent = 'Saving...';
 
             const pakarLainCheckboxes = document.querySelectorAll('input[name="f-pakar-lain"]:checked');
-            const pakarLainArr = Array.from(pakarLainCheckboxes).map(cb => cb.value);
-            
+            const pakarLainArr = Array.from(pakarLainCheckboxes).map(function(cb) { return cb.value; });
+
             const formData = {
                 clinicId: clinicId,
                 tarikh: document.getElementById('f-tarikh').value,
@@ -1057,22 +1070,26 @@
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
 
-            // Push to Firebase Realtime Database under screenings/kp/{clinicId}
-            db.ref('screenings/kp/' + clinicId).push(formData, (error) => {
+            // Push to Firebase — completion callback always re-enables button
+            db.ref('screenings/kp/' + clinicId).push(formData, function(error) {
                 submitBtn.disabled = false;
                 if (error) {
-                    alert("Error saving record to Firebase: " + error.message);
-                    submitBtn.textContent = originalText;
+                    alert('Gagal menyimpan rekod: ' + error.message);
+                    submitBtn.textContent = 'Submit Record';
                 } else {
-                    this.reset();
+                    form.reset();
                     document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
-                    submitBtn.textContent = "✓ Saved Successfully";
-                    submitBtn.style.background = "#28a745";
-                    setTimeout(() => {
-                        submitBtn.textContent = originalText;
-                        submitBtn.style.background = "var(--accent-blue)";
+                    submitBtn.textContent = '✓ Saved Successfully';
+                    submitBtn.style.background = '#28a745';
+                    setTimeout(function() {
+                        submitBtn.textContent = 'Submit Record';
+                        submitBtn.style.background = 'var(--accent-blue)';
                     }, 2000);
                 }
+            }).catch(function(err) {
+                alert('Ralat Rangkaian/Database: ' + err.message);
+                submitBtn.textContent = 'Submit Record';
+                submitBtn.disabled = false;
             });
         });
 
