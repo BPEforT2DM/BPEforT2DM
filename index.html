@@ -28,13 +28,78 @@
             box-sizing: border-box;
         }
 
-        h1 {
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 40px;
-            letter-spacing: -0.5px;
-            font-size: 2rem;
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .header-nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto 24px auto;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 8px 22px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(31, 38, 135, 0.06);
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.25rem;
             color: #1d1d1f;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-glass-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 6px 10px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(31, 38, 135, 0.06);
+        }
+
+        .nav-tab {
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #1d1d1f;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--accent-blue);
+            transform: translateY(-1px);
+        }
+
+        h1, .main-title {
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", sans-serif;
+            font-weight: 700;
+            font-size: 2.25rem;
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
+            margin-top: 10px;
+            margin-bottom: 40px;
         }
 
         .container {
@@ -443,11 +508,45 @@
 </head>
 <body>
 
-    <h1>BPE T2DM Screening Tracker</h1>
+    <header class="header-nav-container">
+        <div class="brand-badge">
+            <svg class="dental-icon" viewBox="0 0 160 100" width="46" height="30" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gumGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ff7b72" />
+                        <stop offset="50%" stop-color="#f05448" />
+                        <stop offset="100%" stop-color="#d63d33" />
+                    </linearGradient>
+                    <linearGradient id="toothGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ffffff" />
+                        <stop offset="85%" stop-color="#f2f7fd" />
+                        <stop offset="100%" stop-color="#dceafd" />
+                    </linearGradient>
+                </defs>
+                <!-- 3 Molar Teeth + Healthy/Inflamed Gum Line (matching user reference) -->
+                <path d="M 5 45 Q 25 35 45 42 Q 65 30 85 45 Q 105 32 125 45 Q 145 35 155 45 C 155 75 140 90 80 90 C 20 90 5 75 5 45 Z" fill="url(#gumGrad)" />
+                <path d="M 18 20 C 18 10, 25 8, 35 10 C 45 8, 50 10, 50 20 C 52 35, 52 50, 47 72 C 44 76, 40 75, 38 66 C 35 55, 30 55, 27 66 C 25 75, 21 76, 18 72 C 14 50, 16 35, 18 20 Z" fill="url(#toothGrad)" />
+                <path d="M 58 18 C 58 8, 65 6, 75 8 C 85 6, 90 8, 90 18 C 92 33, 92 48, 87 70 C 84 74, 80 73, 78 64 C 75 53, 70 53, 67 64 C 65 73, 61 74, 58 70 C 54 48, 56 33, 58 18 Z" fill="url(#toothGrad)" />
+                <path d="M 98 22 C 98 12, 105 10, 115 12 C 125 10, 130 12, 130 22 C 132 37, 132 52, 127 74 C 124 78, 120 77, 118 68 C 115 57, 110 57, 107 68 C 105 77, 101 78, 98 74 C 94 52, 96 37, 98 22 Z" fill="url(#toothGrad)" />
+                <path d="M 21 20 C 22 16, 26 14, 32 15 C 29 17, 23 23, 22 30 Z" fill="rgba(255, 255, 255, 0.85)" />
+                <path d="M 61 18 C 62 14, 66 12, 72 13 C 69 15, 63 21, 62 28 Z" fill="rgba(255, 255, 255, 0.85)" />
+                <path d="M 101 22 C 102 18, 106 16, 112 17 C 109 19, 103 25, 102 32 Z" fill="rgba(255, 255, 255, 0.85)" />
+            </svg>
+            <span class="brand-text">BPEforT2DM</span>
+        </div>
+
+        <nav class="nav-glass-bar">
+            <a href="#section-kk" class="nav-tab">Klinik Kesihatan</a>
+            <a href="#section-kp" class="nav-tab">Klinik Pergigian</a>
+            <a href="#section-doc" class="nav-tab">Surat Rujukan</a>
+        </nav>
+    </header>
+
+    <h1 class="main-title">BPE T2DM Screening Tracker</h1>
 
     <div class="container">
         <!-- Column 1: Medical Officers -->
-        <div class="glass-card">
+        <div class="glass-card" id="section-kk">
             <div class="card-header">🏥 Klinik Kesihatan (Medical)</div>
             <select id="kk-select" class="clinic-select">
                 <option value="" selected disabled>-- Select a Clinic --</option>
@@ -512,7 +611,7 @@
         </div>
 
         <!-- Column 2: Dental Officers -->
-        <div class="glass-card">
+        <div class="glass-card" id="section-kp">
             <div class="card-header">🦷 Klinik Pergigian (Dental)</div>
             <select id="kp-select" class="clinic-select">
                 <option value="" selected disabled>-- Select a Clinic --</option>
@@ -598,7 +697,7 @@
                             <input type="text" id="f-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
 
-                        <button type="submit" class="btn">Record Screening</button>
+                        <button type="submit" class="btn">Submit Record</button>
                     </form>
                 </div>
                 
@@ -628,7 +727,7 @@
         </div>
 
         <!-- Column 3: Surat Rujukan -->
-        <div class="glass-card doc-column">
+        <div class="glass-card doc-column" id="section-doc">
             <div class="card-header">📁 Surat Rujukan</div>
             
             <div class="doc-card">
