@@ -789,6 +789,10 @@
     </div>
 
     <script>
+        // --- CENTRAL GOOGLE SHEETS CONFIGURATION ---
+        // Paste your deployed Google Apps Script Web App URL below:
+        const GOOGLE_SCRIPT_URL = "";
+
         // Default to current month for filters
         const currentMonth = new Date().toISOString().slice(0, 7);
         document.getElementById('kk-month-filter').value = currentMonth;
@@ -796,17 +800,84 @@
         document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
         document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
 
-        // --- KLINIK KESIHATAN DATA & LOGIC ---
-        function getKkData() {
+        // Central In-Memory Cache
+        let centralData = {
+            kk: {},
+            kp: {}
+        };
+
+        // --- LOCAL STORAGE FALLBACK HELPERS ---
+        function getLocalKkData() {
             const data = localStorage.getItem('bpe_kk_screening_data');
             return data ? JSON.parse(data) : {};
         }
 
-        function saveKkData(data) {
+        function saveLocalKkData(data) {
             localStorage.setItem('bpe_kk_screening_data', JSON.stringify(data));
         }
 
-        function renderKK(clinicId) {
+        function getLocalKpData() {
+            const data = localStorage.getItem('bpe_kp_screening_data');
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveLocalKpData(data) {
+            localStorage.setItem('bpe_kp_screening_data', JSON.stringify(data));
+        }
+
+        // --- CENTRAL FETCH & SYNC LOGIC ---
+        async function fetchCentralData() {
+            if (!GOOGLE_SCRIPT_URL) {
+                centralData.kk = getLocalKkData();
+                centralData.kp = getLocalKpData();
+                return;
+            }
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result && result.status === 'success') {
+                        centralData.kk = result.kk || {};
+                        centralData.kp = result.kp || {};
+                        saveLocalKkData(centralData.kk);
+                        saveLocalKpData(centralData.kp);
+                    }
+                }
+            } catch (err) {
+                console.warn("Using local cache due to fetch error:", err);
+                centralData.kk = getLocalKkData();
+                centralData.kp = getLocalKpData();
+            }
+        }
+
+        async function postToGoogleSheets(payload) {
+            if (!GOOGLE_SCRIPT_URL) return false;
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                return response.ok;
+            } catch (err) {
+                console.error("Error posting to Google Sheets:", err);
+                return false;
+            }
+        }
+
+        function getKkData() {
+            return centralData.kk;
+        }
+
+        function getKpData() {
+            return centralData.kp;
+        }
+
+        // --- KLINIK KESIHATAN DATA & LOGIC ---
+        async function renderKK(clinicId) {
             const tbody = document.getElementById('kk-tbody');
             tbody.innerHTML = '';
             
@@ -836,11 +907,12 @@
             });
         }
 
-        document.getElementById('kk-select').addEventListener('change', (e) => {
+        document.getElementById('kk-select').addEventListener('change', async (e) => {
             const val = e.target.value;
             const content = document.getElementById('kk-content');
             if (val) {
                 content.classList.remove('hidden');
+                await fetchCentralData();
                 renderKK(val);
             } else {
                 content.classList.add('hidden');
@@ -852,12 +924,19 @@
             if (clinicId) renderKK(clinicId);
         });
 
-        document.getElementById('kk-screening-form').addEventListener('submit', function(e) {
+        document.getElementById('kk-screening-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const clinicId = document.getElementById('kk-select').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Saving...";
             
             const formData = {
+                type: 'kk',
+                clinicId: clinicId,
                 id: Date.now(),
                 tarikh: document.getElementById('kk-tarikh').value,
                 nama: document.getElementById('kk-nama').value,
@@ -866,26 +945,29 @@
                 pegawai: document.getElementById('kk-pegawai').value
             };
 
-            const data = getKkData();
-            if (!data[clinicId]) {
-                data[clinicId] = [];
+            // Post to central Google Sheet
+            await postToGoogleSheets(formData);
+
+            // Update central data memory and local storage
+            if (!centralData.kk[clinicId]) {
+                centralData.kk[clinicId] = [];
             }
-            
-            data[clinicId].push(formData);
-            saveKkData(data);
+            centralData.kk[clinicId].push(formData);
+            saveLocalKkData(centralData.kk);
             
             this.reset();
             document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
             
+            // Re-fetch for live sync and render
+            await fetchCentralData();
             renderKK(clinicId);
             
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.textContent;
-            btn.textContent = "✓ Saved Successfully";
-            btn.style.background = "#28a745";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "✓ Saved Successfully";
+            submitBtn.style.background = "#28a745";
             setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = "var(--accent-blue)";
+                submitBtn.textContent = originalText;
+                submitBtn.style.background = "var(--accent-blue)";
             }, 2000);
         });
 
@@ -924,17 +1006,8 @@
             XLSX.writeFile(wb, `BPE_KK_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
         }
 
-        // --- KLINIK PERGIGIAN (FORM & LOCAL STORAGE) ---
-        function getKpData() {
-            const data = localStorage.getItem('bpe_kp_screening_data');
-            return data ? JSON.parse(data) : {};
-        }
-
-        function saveKpData(data) {
-            localStorage.setItem('bpe_kp_screening_data', JSON.stringify(data));
-        }
-
-        function renderKP(clinicId) {
+        // --- KLINIK PERGIGIAN DATA & LOGIC ---
+        async function renderKP(clinicId) {
             const tbody = document.getElementById('kp-tbody');
             tbody.innerHTML = '';
             
@@ -964,11 +1037,12 @@
             });
         }
 
-        document.getElementById('kp-select').addEventListener('change', (e) => {
+        document.getElementById('kp-select').addEventListener('change', async (e) => {
             const val = e.target.value;
             const content = document.getElementById('kp-content');
             if (val) {
                 content.classList.remove('hidden');
+                await fetchCentralData();
                 renderKP(val);
             } else {
                 content.classList.add('hidden');
@@ -980,15 +1054,23 @@
             if (clinicId) renderKP(clinicId);
         });
 
-        // Form Submit
-        document.getElementById('screening-form').addEventListener('submit', function(e) {
+        // Form Submit KP
+        document.getElementById('screening-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const clinicId = document.getElementById('kp-select').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Saving...";
+
             const pakarLainCheckboxes = document.querySelectorAll('input[name="f-pakar-lain"]:checked');
             const pakarLainArr = Array.from(pakarLainCheckboxes).map(cb => cb.value);
             
             const formData = {
+                type: 'kp',
+                clinicId: clinicId,
                 id: Date.now(),
                 tarikh: document.getElementById('f-tarikh').value,
                 nama: document.getElementById('f-nama').value,
@@ -1002,32 +1084,33 @@
                 pegawai: document.getElementById('f-pegawai').value
             };
 
-            const data = getKpData();
-            if (!data[clinicId]) {
-                data[clinicId] = [];
+            // Post to central Google Sheet
+            await postToGoogleSheets(formData);
+
+            // Update central data memory and local storage
+            if (!centralData.kp[clinicId]) {
+                centralData.kp[clinicId] = [];
             }
-            
-            data[clinicId].push(formData);
-            saveKpData(data);
+            centralData.kp[clinicId].push(formData);
+            saveLocalKpData(centralData.kp);
             
             this.reset();
-            // Retain the current date after reset for convenience
             document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
             
+            // Re-fetch for live sync and render
+            await fetchCentralData();
             renderKP(clinicId);
             
-            // Show brief confirmation
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.textContent;
-            btn.textContent = "✓ Saved Successfully";
-            btn.style.background = "#28a745";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "✓ Saved Successfully";
+            submitBtn.style.background = "#28a745";
             setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = "var(--accent-blue)";
+                submitBtn.textContent = originalText;
+                submitBtn.style.background = "var(--accent-blue)";
             }, 2000);
         });
 
-        // Excel Export
+        // Excel Export KP
         function exportExcelKP() {
             const clinicId = document.getElementById('kp-select').value;
             if (!clinicId) return;
@@ -1068,6 +1151,24 @@
             const suffix = filterMonth ? filterMonth : new Date().toISOString().split('T')[0];
             XLSX.writeFile(wb, `BPE_KP_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
         }
+
+        // --- INITIALIZATION & AUTO SYNC ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            await fetchCentralData();
+            const kkClinic = document.getElementById('kk-select').value;
+            if (kkClinic) renderKK(kkClinic);
+            const kpClinic = document.getElementById('kp-select').value;
+            if (kpClinic) renderKP(kpClinic);
+
+            // Auto refresh central data every 15 seconds for live cross-device sync
+            setInterval(async () => {
+                await fetchCentralData();
+                const activeKK = document.getElementById('kk-select').value;
+                if (activeKK) renderKK(activeKK);
+                const activeKP = document.getElementById('kp-select').value;
+                if (activeKP) renderKP(activeKP);
+            }, 15000);
+        });
     </script>
 </body>
 </html>
