@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BPE T2DM Tracker</title>
+    
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
     <style>
         :root {
             --bg-color: #e8f2fc;
@@ -35,9 +39,9 @@
 
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -51,6 +55,7 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
         }
 
         .card-header {
@@ -63,7 +68,7 @@
             color: #1d1d1f;
         }
 
-        select {
+        select.clinic-select {
             width: 100%;
             padding: 14px 16px;
             border-radius: 12px;
@@ -71,7 +76,7 @@
             background: rgba(255, 255, 255, 0.8);
             font-size: 1rem;
             outline: none;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             appearance: none;
             -webkit-appearance: none;
             font-family: inherit;
@@ -79,14 +84,83 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             transition: all 0.3s ease;
             cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231d1d1f' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231d1d1f' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
         }
 
-        select:focus {
+        select.clinic-select:focus {
             border-color: var(--accent-blue);
             box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+        }
+
+        /* Forms Styling */
+        .form-container {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .form-row .form-col {
+            flex: 1;
+        }
+
+        .checkbox-group, .radio-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label, .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
         }
 
         .data-table {
@@ -94,7 +168,7 @@
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .data-table th {
@@ -126,12 +200,14 @@
             font-size: 0.8rem;
             font-weight: 500;
             display: inline-block;
+            white-space: nowrap;
         }
 
         .badge.referred { background: rgba(52, 199, 89, 0.15); color: #248a3d; }
         .badge.pending { background: rgba(255, 149, 0, 0.15); color: #cc7a00; }
         .badge.completed { background: rgba(0, 113, 227, 0.15); color: #005bb5; }
         
+        /* Buttons */
         .btn {
             background: var(--accent-blue);
             color: white;
@@ -145,12 +221,29 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
             margin-top: auto;
+            font-family: inherit;
         }
 
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4);
             background: #0060c0;
+        }
+
+        .btn.btn-small {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            width: auto;
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--accent-blue);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+        
+        .btn.btn-small:hover {
+            background: white;
+            transform: translateY(-1px);
         }
 
         .slip-content {
@@ -161,9 +254,44 @@
             margin-bottom: 30px;
         }
 
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
+        .month-filter-container {
+            display: flex; 
+            justify-content: flex-end; 
+            align-items: center; 
+            margin-bottom: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .month-filter-container input[type="month"] {
+            width: auto;
+            padding: 8px 12px;
+        }
+
+        /* Dynamic Visibility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+            .month-filter-container {
+                justify-content: space-between;
+                width: 100%;
+            }
+            .btn.btn-small {
+                flex-grow: 1;
+                text-align: center;
+            }
         }
 
         /* Printable Area */
@@ -250,49 +378,152 @@
         <!-- Column 1: Medical Officers -->
         <div class="glass-card">
             <div class="card-header">🏥 Klinik Kesihatan (Medical)</div>
-            <select id="kk-select">
+            <select id="kk-select" class="clinic-select">
+                <option value="" selected disabled>-- Select a Clinic --</option>
                 <option value="kb">Klinik Kesihatan Kota Bharu</option>
                 <option value="pc">Klinik Kesihatan Pengkalan Chepa</option>
                 <option value="kl">Klinik Kesihatan Kok Lanas</option>
             </select>
             
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Patient Name</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="kk-tbody">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
+            <div id="kk-content" class="hidden">
+                <div class="month-filter-container">
+                    <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
+                    <input type="month" id="kk-month-filter" class="form-control">
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Patient Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kk-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- Column 2: Dental Officers -->
         <div class="glass-card">
             <div class="card-header">🦷 Klinik Pergigian (Dental)</div>
-            <select id="kp-select">
+            <select id="kp-select" class="clinic-select">
+                <option value="" selected disabled>-- Select a Clinic --</option>
                 <option value="kb">Klinik Pergigian Kota Bharu</option>
                 <option value="pc">Klinik Pergigian Pengkalan Chepa</option>
                 <option value="kl">Klinik Pergigian Kok Lanas</option>
             </select>
             
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Patient Name</th>
-                            <th>BPE</th>
-                            <th>Care Plan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="kp-tbody">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
+            <div id="kp-content" class="hidden">
+                <div class="form-container">
+                    <form id="screening-form">
+                        <div class="form-group">
+                            <label>1. Tarikh Kedatangan</label>
+                            <input type="date" id="f-tarikh" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>2. Nama Penuh Pesakit</label>
+                            <input type="text" id="f-nama" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group form-col">
+                                <label>3. No RN</label>
+                                <input type="number" id="f-rn" class="form-control" pattern="[0-9]*" required>
+                            </div>
+                            <div class="form-group form-col">
+                                <label>4. Umur</label>
+                                <input type="number" id="f-umur" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>5. Punca Rujukan</label>
+                            <select id="f-punca" class="form-control" required>
+                                <option value="">Sila Pilih...</option>
+                                <option value="KK">KK</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>6. Saringan Penyakit Periodontium (BPE)</label>
+                            <select id="f-saringan" class="form-control" required>
+                                <option value="">Sila Pilih...</option>
+                                <optgroup label="Non-Periodontitis">
+                                    <option value="BPE 0">BPE 0</option>
+                                    <option value="BPE 1">BPE 1</option>
+                                    <option value="BPE 2">BPE 2</option>
+                                </optgroup>
+                                <optgroup label="Periodontitis">
+                                    <option value="BPE 3">BPE 3</option>
+                                    <option value="BPE 4">BPE 4</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>7. Rujukan Kepada Pakar Periodontik</label>
+                            <select id="f-pakar-perio" class="form-control" required>
+                                <option value="">Sila Pilih...</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                                <option value="Enggan">Enggan</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>8. Rujukan Kepada Pakar Lain</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="f-pakar-lain" value="UPPKA"> UPPKA</label>
+                                <label><input type="checkbox" name="f-pakar-lain" value="SCD"> SCD</label>
+                                <label><input type="checkbox" name="f-pakar-lain" value="Tiada"> Tiada</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>9. Kes Selesai Periodontium</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="f-selesai" value="Ya" required> Ya</label>
+                                <label><input type="radio" name="f-selesai" value="Tidak" required> Tidak</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>10. Nama Pegawai</label>
+                            <input type="text" id="f-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+
+                        <button type="submit" class="btn">Record Screening</button>
+                    </form>
+                </div>
+                
+                <div class="table-container" style="margin-top: 10px;">
+                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;">Live Entries</h3>
+                    <div class="month-filter-container">
+                        <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
+                        <input type="month" id="kp-month-filter" class="form-control">
+                        <button class="btn btn-small" onclick="exportExcel()">Export Excel</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>BPE</th>
+                                <th>Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kp-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -345,44 +576,52 @@
     </div>
 
     <script>
+        // Default to current month for filters
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        document.getElementById('kk-month-filter').value = currentMonth;
+        document.getElementById('kp-month-filter').value = currentMonth;
+        document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
+
+        // --- KLINIK KESIHATAN DATA (DUMMY WITH DATES) ---
         const kkData = {
             'kb': [
-                { name: 'Ahmad bin Ali', status: 'Referred to KP', type: 'referred' },
-                { name: 'Siti binti Abu', status: 'Pending Screening', type: 'pending' },
-                { name: 'Chong Wei', status: 'Referred to KP', type: 'referred' },
-                { name: 'Raju A/L Samy', status: 'Screened - No Referral', type: 'completed' }
+                { date: currentMonth + '-02', name: 'Ahmad bin Ali', status: 'Referred to KP', type: 'referred' },
+                { date: currentMonth + '-15', name: 'Siti binti Abu', status: 'Pending Screening', type: 'pending' },
+                { date: '2023-08-10', name: 'Chong Wei', status: 'Referred to KP', type: 'referred' },
+                { date: currentMonth + '-22', name: 'Raju A/L Samy', status: 'Screened - No Referral', type: 'completed' }
             ],
             'pc': [
-                { name: 'Muthu Kumar', status: 'Referred to KP', type: 'referred' },
-                { name: 'Nurul Huda', status: 'Pending Screening', type: 'pending' },
-                { name: 'Sarah Lee', status: 'Pending Screening', type: 'pending' }
+                { date: currentMonth + '-05', name: 'Muthu Kumar', status: 'Referred to KP', type: 'referred' },
+                { date: '2023-09-01', name: 'Nurul Huda', status: 'Pending Screening', type: 'pending' },
+                { date: currentMonth + '-20', name: 'Sarah Lee', status: 'Pending Screening', type: 'pending' }
             ],
             'kl': [
-                { name: 'Tan Ah Kao', status: 'Referred to KP', type: 'referred' },
-                { name: 'Faridah binti Omar', status: 'Screened - No Referral', type: 'completed' },
-                { name: 'Lim Mei Mei', status: 'Pending Screening', type: 'pending' }
-            ]
-        };
-
-        const kpData = {
-            'kb': [
-                { name: 'Ahmad bin Ali', bpe: '3,3,2 | 1,2,3', plan: 'Scaling + OHI' },
-                { name: 'Chong Wei', bpe: '4,3,4 | 4,2,3', plan: 'RSD Sextant 1,3,4' }
-            ],
-            'pc': [
-                { name: 'Muthu Kumar', bpe: '*,2,1 | 1,2,*', plan: 'Extraction + OHI' }
-            ],
-            'kl': [
-                { name: 'Tan Ah Kao', bpe: '1,1,1 | 1,1,1', plan: 'OHI only' }
+                { date: currentMonth + '-12', name: 'Tan Ah Kao', status: 'Referred to KP', type: 'referred' },
+                { date: currentMonth + '-25', name: 'Faridah binti Omar', status: 'Screened - No Referral', type: 'completed' },
+                { date: '2023-07-30', name: 'Lim Mei Mei', status: 'Pending Screening', type: 'pending' }
             ]
         };
 
         function renderKK(clinicId) {
             const tbody = document.getElementById('kk-tbody');
             tbody.innerHTML = '';
-            kkData[clinicId].forEach(patient => {
+            
+            const filterMonth = document.getElementById('kk-month-filter').value;
+            let patients = kkData[clinicId] || [];
+            
+            if (filterMonth) {
+                patients = patients.filter(p => p.date.startsWith(filterMonth));
+            }
+
+            if (patients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                return;
+            }
+
+            patients.forEach(patient => {
                 tbody.innerHTML += `
                     <tr>
+                        <td>${patient.date}</td>
                         <td style="font-weight: 500;">${patient.name}</td>
                         <td><span class="badge ${patient.type}">${patient.status}</span></td>
                     </tr>
@@ -390,31 +629,165 @@
             });
         }
 
+        document.getElementById('kk-select').addEventListener('change', (e) => {
+            const val = e.target.value;
+            const content = document.getElementById('kk-content');
+            if (val) {
+                content.classList.remove('hidden');
+                renderKK(val);
+            } else {
+                content.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('kk-month-filter').addEventListener('change', () => {
+            const clinicId = document.getElementById('kk-select').value;
+            if (clinicId) renderKK(clinicId);
+        });
+
+
+        // --- KLINIK PERGIGIAN (FORM & LOCAL STORAGE) ---
+        function getKpData() {
+            const data = localStorage.getItem('bpe_kp_screening_data');
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveKpData(data) {
+            localStorage.setItem('bpe_kp_screening_data', JSON.stringify(data));
+        }
+
         function renderKP(clinicId) {
             const tbody = document.getElementById('kp-tbody');
             tbody.innerHTML = '';
-            kpData[clinicId].forEach(patient => {
+            
+            const filterMonth = document.getElementById('kp-month-filter').value;
+            const data = getKpData();
+            let patients = data[clinicId] || [];
+            
+            if (filterMonth) {
+                patients = patients.filter(p => p.tarikh && p.tarikh.startsWith(filterMonth));
+            }
+
+            if (patients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                return;
+            }
+
+            patients.forEach(patient => {
                 tbody.innerHTML += `
                     <tr>
-                        <td style="font-weight: 500;">${patient.name}</td>
-                        <td style="font-family: monospace; font-size: 14px; letter-spacing: 1px;">${patient.bpe}</td>
-                        <td>${patient.plan}</td>
+                        <td>${patient.tarikh}</td>
+                        <td style="font-weight: 500;">${patient.nama}</td>
+                        <td><span class="badge completed">${patient.saringan}</span></td>
+                        <td>${patient.selesai}</td>
                     </tr>
                 `;
             });
         }
 
-        document.getElementById('kk-select').addEventListener('change', (e) => {
-            renderKK(e.target.value);
-        });
-
         document.getElementById('kp-select').addEventListener('change', (e) => {
-            renderKP(e.target.value);
+            const val = e.target.value;
+            const content = document.getElementById('kp-content');
+            if (val) {
+                content.classList.remove('hidden');
+                renderKP(val);
+            } else {
+                content.classList.add('hidden');
+            }
         });
 
-        // Initial render
-        renderKK('kb');
-        renderKP('kb');
+        document.getElementById('kp-month-filter').addEventListener('change', () => {
+            const clinicId = document.getElementById('kp-select').value;
+            if (clinicId) renderKP(clinicId);
+        });
+
+        // Form Submit
+        document.getElementById('screening-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const clinicId = document.getElementById('kp-select').value;
+            const pakarLainCheckboxes = document.querySelectorAll('input[name="f-pakar-lain"]:checked');
+            const pakarLainArr = Array.from(pakarLainCheckboxes).map(cb => cb.value);
+            
+            const formData = {
+                id: Date.now(),
+                tarikh: document.getElementById('f-tarikh').value,
+                nama: document.getElementById('f-nama').value,
+                rn: document.getElementById('f-rn').value,
+                umur: document.getElementById('f-umur').value,
+                punca: document.getElementById('f-punca').value,
+                saringan: document.getElementById('f-saringan').value,
+                pakarPerio: document.getElementById('f-pakar-perio').value,
+                pakarLain: pakarLainArr.length > 0 ? pakarLainArr.join(', ') : 'Tiada',
+                selesai: document.querySelector('input[name="f-selesai"]:checked').value,
+                pegawai: document.getElementById('f-pegawai').value
+            };
+
+            const data = getKpData();
+            if (!data[clinicId]) {
+                data[clinicId] = [];
+            }
+            
+            data[clinicId].push(formData);
+            saveKpData(data);
+            
+            this.reset();
+            // Retain the current date after reset for convenience
+            document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
+            
+            renderKP(clinicId);
+            
+            // Show brief confirmation
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = "✓ Saved Successfully";
+            btn.style.background = "#28a745";
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = "var(--accent-blue)";
+            }, 2000);
+        });
+
+        // Excel Export
+        function exportExcel() {
+            const clinicId = document.getElementById('kp-select').value;
+            const clinicName = document.getElementById('kp-select').options[document.getElementById('kp-select').selectedIndex].text;
+            const filterMonth = document.getElementById('kp-month-filter').value;
+            
+            const data = getKpData();
+            let patients = data[clinicId] || [];
+            
+            if (filterMonth) {
+                patients = patients.filter(p => p.tarikh && p.tarikh.startsWith(filterMonth));
+            }
+            
+            if (patients.length === 0) {
+                alert("Tiada data pesakit untuk bulan yang dipilih bagi " + clinicName);
+                return;
+            }
+            
+            // Format data for Excel
+            const exportData = patients.map((p, index) => ({
+                "No.": index + 1,
+                "Tarikh Kedatangan": p.tarikh,
+                "Nama Penuh Pesakit": p.nama,
+                "No RN": p.rn,
+                "Umur": p.umur,
+                "Punca Rujukan": p.punca,
+                "Saringan Penyakit Periodontium": p.saringan,
+                "Rujukan Pakar Periodontik": p.pakarPerio,
+                "Rujukan Pakar Lain": p.pakarLain,
+                "Kes Selesai": p.selesai,
+                "Nama Pegawai": p.pegawai
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "BPE Screening Data");
+            
+            const suffix = filterMonth ? filterMonth : new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `BPE_Monthly_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
+        }
     </script>
 </body>
 </html>
