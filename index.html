@@ -386,16 +386,49 @@
             </select>
             
             <div id="kk-content" class="hidden">
-                <div class="month-filter-container">
-                    <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
-                    <input type="month" id="kk-month-filter" class="form-control">
+                <div class="form-container">
+                    <form id="kk-screening-form">
+                        <div class="form-group">
+                            <label>1. Tarikh Kedatangan</label>
+                            <input type="date" id="kk-tarikh" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>2. Nama Penuh Pesakit</label>
+                            <input type="text" id="kk-nama" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+                        <div class="form-group">
+                            <label>3. No. IC Pesakit</label>
+                            <input type="text" id="kk-ic" class="form-control" pattern="[0-9]*" title="Numbers only" required>
+                        </div>
+                        <div class="form-group">
+                            <label>4. Rujukan untuk BPE Screening</label>
+                            <select id="kk-rujukan" class="form-control" required>
+                                <option value="">Sila Pilih...</option>
+                                <option value="Dirujuk">Dirujuk</option>
+                                <option value="Enggan">Enggan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>5. Nama Pegawai</label>
+                            <input type="text" id="kk-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+                        <button type="submit" class="btn">Submit Record</button>
+                    </form>
                 </div>
-                <div class="table-container">
+
+                <div class="table-container" style="margin-top: 10px;">
+                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;">Live Entries</h3>
+                    <div class="month-filter-container">
+                        <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
+                        <input type="month" id="kk-month-filter" class="form-control">
+                        <button class="btn btn-small" onclick="exportExcelKK()">Export Monthly Excel (.xlsx)</button>
+                    </div>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Patient Name</th>
+                                <th>IC</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -430,28 +463,24 @@
                             <input type="text" id="f-nama" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         
+                        <div class="form-group">
+                            <label>3. No. IC Pesakit</label>
+                            <input type="text" id="f-ic" class="form-control" pattern="[0-9]*" title="Numbers only" required>
+                        </div>
+                        
                         <div class="form-row">
                             <div class="form-group form-col">
-                                <label>3. No RN</label>
-                                <input type="number" id="f-rn" class="form-control" pattern="[0-9]*" required>
+                                <label>4. No RN</label>
+                                <input type="text" id="f-rn" class="form-control" pattern="[0-9]*" title="Numbers only" required>
                             </div>
                             <div class="form-group form-col">
-                                <label>4. Umur</label>
-                                <input type="number" id="f-umur" class="form-control" required>
+                                <label>5. Umur</label>
+                                <input type="text" id="f-umur" class="form-control" pattern="[0-9]*" title="Numbers only" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>5. Punca Rujukan</label>
-                            <select id="f-punca" class="form-control" required>
-                                <option value="">Sila Pilih...</option>
-                                <option value="KK">KK</option>
-                                <option value="Lain-lain">Lain-lain</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>6. Saringan Penyakit Periodontium (BPE)</label>
+                            <label>6. Saringan Penyakit Periodontium dan Peri-implan</label>
                             <select id="f-saringan" class="form-control" required>
                                 <option value="">Sila Pilih...</option>
                                 <optgroup label="Non-Periodontitis">
@@ -473,7 +502,6 @@
                                 <option value="Ya">Ya</option>
                                 <option value="Tidak">Tidak</option>
                                 <option value="Enggan">Enggan</option>
-                                <option value="Lain-lain">Lain-lain</option>
                             </select>
                         </div>
 
@@ -508,13 +536,14 @@
                     <div class="month-filter-container">
                         <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
                         <input type="month" id="kp-month-filter" class="form-control">
-                        <button class="btn btn-small" onclick="exportExcel()">Export Excel</button>
+                        <button class="btn btn-small" onclick="exportExcelKP()">Export Monthly Excel (.xlsx)</button>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Name</th>
+                                <th>IC</th>
                                 <th>BPE</th>
                                 <th>Completed</th>
                             </tr>
@@ -581,49 +610,43 @@
         document.getElementById('kk-month-filter').value = currentMonth;
         document.getElementById('kp-month-filter').value = currentMonth;
         document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
+        document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
 
-        // --- KLINIK KESIHATAN DATA (DUMMY WITH DATES) ---
-        const kkData = {
-            'kb': [
-                { date: currentMonth + '-02', name: 'Ahmad bin Ali', status: 'Referred to KP', type: 'referred' },
-                { date: currentMonth + '-15', name: 'Siti binti Abu', status: 'Pending Screening', type: 'pending' },
-                { date: '2023-08-10', name: 'Chong Wei', status: 'Referred to KP', type: 'referred' },
-                { date: currentMonth + '-22', name: 'Raju A/L Samy', status: 'Screened - No Referral', type: 'completed' }
-            ],
-            'pc': [
-                { date: currentMonth + '-05', name: 'Muthu Kumar', status: 'Referred to KP', type: 'referred' },
-                { date: '2023-09-01', name: 'Nurul Huda', status: 'Pending Screening', type: 'pending' },
-                { date: currentMonth + '-20', name: 'Sarah Lee', status: 'Pending Screening', type: 'pending' }
-            ],
-            'kl': [
-                { date: currentMonth + '-12', name: 'Tan Ah Kao', status: 'Referred to KP', type: 'referred' },
-                { date: currentMonth + '-25', name: 'Faridah binti Omar', status: 'Screened - No Referral', type: 'completed' },
-                { date: '2023-07-30', name: 'Lim Mei Mei', status: 'Pending Screening', type: 'pending' }
-            ]
-        };
+        // --- KLINIK KESIHATAN DATA & LOGIC ---
+        function getKkData() {
+            const data = localStorage.getItem('bpe_kk_screening_data');
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveKkData(data) {
+            localStorage.setItem('bpe_kk_screening_data', JSON.stringify(data));
+        }
 
         function renderKK(clinicId) {
             const tbody = document.getElementById('kk-tbody');
             tbody.innerHTML = '';
             
             const filterMonth = document.getElementById('kk-month-filter').value;
-            let patients = kkData[clinicId] || [];
+            const data = getKkData();
+            let patients = data[clinicId] || [];
             
             if (filterMonth) {
-                patients = patients.filter(p => p.date.startsWith(filterMonth));
+                patients = patients.filter(p => p.tarikh && p.tarikh.startsWith(filterMonth));
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
                 return;
             }
 
             patients.forEach(patient => {
+                const statusClass = patient.rujukan === 'Dirujuk' ? 'referred' : 'pending';
                 tbody.innerHTML += `
                     <tr>
-                        <td>${patient.date}</td>
-                        <td style="font-weight: 500;">${patient.name}</td>
-                        <td><span class="badge ${patient.type}">${patient.status}</span></td>
+                        <td>${patient.tarikh}</td>
+                        <td style="font-weight: 500;">${patient.nama}</td>
+                        <td>${patient.ic}</td>
+                        <td><span class="badge ${statusClass}">${patient.rujukan}</span></td>
                     </tr>
                 `;
             });
@@ -645,6 +668,77 @@
             if (clinicId) renderKK(clinicId);
         });
 
+        document.getElementById('kk-screening-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const clinicId = document.getElementById('kk-select').value;
+            
+            const formData = {
+                id: Date.now(),
+                tarikh: document.getElementById('kk-tarikh').value,
+                nama: document.getElementById('kk-nama').value,
+                ic: document.getElementById('kk-ic').value,
+                rujukan: document.getElementById('kk-rujukan').value,
+                pegawai: document.getElementById('kk-pegawai').value
+            };
+
+            const data = getKkData();
+            if (!data[clinicId]) {
+                data[clinicId] = [];
+            }
+            
+            data[clinicId].push(formData);
+            saveKkData(data);
+            
+            this.reset();
+            document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
+            
+            renderKK(clinicId);
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = "✓ Saved Successfully";
+            btn.style.background = "#28a745";
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = "var(--accent-blue)";
+            }, 2000);
+        });
+
+        function exportExcelKK() {
+            const clinicId = document.getElementById('kk-select').value;
+            if (!clinicId) return;
+            const clinicName = document.getElementById('kk-select').options[document.getElementById('kk-select').selectedIndex].text;
+            const filterMonth = document.getElementById('kk-month-filter').value;
+            
+            const data = getKkData();
+            let patients = data[clinicId] || [];
+            
+            if (filterMonth) {
+                patients = patients.filter(p => p.tarikh && p.tarikh.startsWith(filterMonth));
+            }
+            
+            if (patients.length === 0) {
+                alert("Tiada data pesakit untuk bulan yang dipilih bagi " + clinicName);
+                return;
+            }
+            
+            const exportData = patients.map((p, index) => ({
+                "No.": index + 1,
+                "Tarikh Kedatangan": p.tarikh,
+                "Nama Penuh Pesakit": p.nama,
+                "No. IC Pesakit": p.ic,
+                "Rujukan BPE": p.rujukan,
+                "Nama Pegawai": p.pegawai || ""
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "KK Data");
+            
+            const suffix = filterMonth ? filterMonth : new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `BPE_KK_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
+        }
 
         // --- KLINIK PERGIGIAN (FORM & LOCAL STORAGE) ---
         function getKpData() {
@@ -669,7 +763,7 @@
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
                 return;
             }
 
@@ -678,6 +772,7 @@
                     <tr>
                         <td>${patient.tarikh}</td>
                         <td style="font-weight: 500;">${patient.nama}</td>
+                        <td>${patient.ic}</td>
                         <td><span class="badge completed">${patient.saringan}</span></td>
                         <td>${patient.selesai}</td>
                     </tr>
@@ -713,9 +808,9 @@
                 id: Date.now(),
                 tarikh: document.getElementById('f-tarikh').value,
                 nama: document.getElementById('f-nama').value,
+                ic: document.getElementById('f-ic').value,
                 rn: document.getElementById('f-rn').value,
                 umur: document.getElementById('f-umur').value,
-                punca: document.getElementById('f-punca').value,
                 saringan: document.getElementById('f-saringan').value,
                 pakarPerio: document.getElementById('f-pakar-perio').value,
                 pakarLain: pakarLainArr.length > 0 ? pakarLainArr.join(', ') : 'Tiada',
@@ -749,8 +844,9 @@
         });
 
         // Excel Export
-        function exportExcel() {
+        function exportExcelKP() {
             const clinicId = document.getElementById('kp-select').value;
+            if (!clinicId) return;
             const clinicName = document.getElementById('kp-select').options[document.getElementById('kp-select').selectedIndex].text;
             const filterMonth = document.getElementById('kp-month-filter').value;
             
@@ -771,9 +867,9 @@
                 "No.": index + 1,
                 "Tarikh Kedatangan": p.tarikh,
                 "Nama Penuh Pesakit": p.nama,
+                "No. IC Pesakit": p.ic,
                 "No RN": p.rn,
                 "Umur": p.umur,
-                "Punca Rujukan": p.punca,
                 "Saringan Penyakit Periodontium": p.saringan,
                 "Rujukan Pakar Periodontik": p.pakarPerio,
                 "Rujukan Pakar Lain": p.pakarLain,
@@ -783,10 +879,10 @@
             
             const ws = XLSX.utils.json_to_sheet(exportData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "BPE Screening Data");
+            XLSX.utils.book_append_sheet(wb, ws, "KP Data");
             
             const suffix = filterMonth ? filterMonth : new Date().toISOString().split('T')[0];
-            XLSX.writeFile(wb, `BPE_Monthly_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
+            XLSX.writeFile(wb, `BPE_KP_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
         }
     </script>
 </body>
