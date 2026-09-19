@@ -246,6 +246,74 @@
             transform: translateY(-1px);
         }
 
+        /* Document Cards */
+        .doc-column {
+            justify-content: flex-start;
+        }
+        
+        .doc-card {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .doc-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .doc-card:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .doc-title {
+            font-weight: 600;
+            color: #1d1d1f;
+            font-size: 1.05rem;
+            line-height: 1.4;
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .doc-actions .btn {
+            margin-top: 0;
+            padding: 12px;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-download {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent-blue);
+            border: 1px solid rgba(0, 113, 227, 0.3);
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .btn-download:hover {
+            background: rgba(0, 113, 227, 0.05);
+            transform: translateY(-1px);
+        }
+
         .slip-content {
             margin-top: 10px;
             color: #555;
@@ -291,6 +359,9 @@
             .btn.btn-small {
                 flex-grow: 1;
                 text-align: center;
+            }
+            .doc-actions {
+                flex-direction: column;
             }
         }
 
@@ -556,16 +627,30 @@
             </div>
         </div>
 
-        <!-- Column 3: BPE Slip Generator -->
-        <div class="glass-card">
-            <div>
-                <div class="card-header">📄 BPE Slip Generator</div>
-                <div class="slip-content">
-                    <p>Generate a physical Basic Periodontal Examination slip for patient records.</p>
-                    <p>The printout includes a standardized 6-sextant BPE recording grid and patient details section optimized for A4 paper.</p>
+        <!-- Column 3: Surat Rujukan -->
+        <div class="glass-card doc-column">
+            <div class="card-header">📁 Surat Rujukan</div>
+            
+            <div class="doc-card">
+                <div class="doc-title">Garis Panduan Pengurusan Penyakit Periodontium</div>
+                <div class="doc-actions">
+                    <a href="Dokumen/Garis-Panduan-Pengurusan-Penyakit-Periodontium.pdf" download class="btn btn-download">Download</a>
                 </div>
             </div>
-            <button class="btn" onclick="window.print()">Print / Download Slip</button>
+
+            <div class="doc-card">
+                <div class="doc-title">Slip Rujukan BPE</div>
+                <div class="doc-actions">
+                    <a href="Dokumen/Slip-Rujukan-BPE.pdf" download class="btn btn-download">Download</a>
+                </div>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-title">Surat Rujukan Periodontik</div>
+                <div class="doc-actions">
+                    <a href="Dokumen/Surat-Rujukan-Periodontik.pdf" download class="btn btn-download">Download</a>
+                </div>
+            </div>
         </div>
     </div>
 
