@@ -37,13 +37,24 @@
         }
 
         .header-nav-container {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             max-width: 1400px;
             margin: 0 auto 24px auto;
-            flex-wrap: wrap;
             gap: 16px;
+        }
+
+        .header-nav-container .brand-badge {
+            justify-self: start;
+        }
+
+        .header-nav-container .nav-glass-bar {
+            justify-self: center;
+        }
+
+        .header-nav-container .lang-switch-container {
+            justify-self: end;
         }
 
         .brand-badge {
@@ -93,6 +104,73 @@
             background: rgba(255, 255, 255, 0.85);
             color: var(--accent-blue);
             transform: translateY(-1px);
+        }
+
+        /* Language Pill Switch Toggle (Liquid Glass & Pastel Blue) */
+        .lang-switch-container {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .lang-pill-switch {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 113, 227, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            user-select: none;
+            width: 104px;
+            height: 38px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .lang-pill-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 48px;
+            height: 30px;
+            background: linear-gradient(135deg, rgba(220, 238, 255, 0.95), rgba(195, 225, 255, 0.95));
+            border-radius: 24px;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        /* When BM is active, slider slides to right */
+        .lang-pill-switch.active-bm .lang-pill-slider {
+            transform: translateX(48px);
+        }
+
+        .lang-pill-opt {
+            flex: 1;
+            text-align: center;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #556270;
+            z-index: 2;
+            transition: color 0.25s ease;
+            line-height: 30px;
+        }
+
+        .lang-pill-switch:not(.active-bm) .lang-pill-opt.opt-en {
+            color: var(--accent-blue);
+        }
+
+        .lang-pill-switch.active-bm .lang-pill-opt.opt-bm {
+            color: var(--accent-blue);
+        }
+
+        .lang-pill-switch:hover {
+            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.14);
         }
 
         h1, .main-title {
@@ -433,7 +511,40 @@
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             body {
-                padding: 20px 10px;
+                padding: 16px 12px;
+            }
+            .header-nav-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            .brand-badge {
+                order: 1;
+                padding: 6px 14px;
+            }
+            .brand-text {
+                font-size: 1.05rem;
+            }
+            .dental-icon {
+                width: 36px;
+                height: 24px;
+            }
+            .lang-switch-container {
+                order: 2;
+                margin-left: auto;
+            }
+            .nav-glass-bar {
+                order: 3;
+                width: 100%;
+                justify-content: space-around;
+                padding: 6px 8px;
+            }
+            .nav-tab {
+                padding: 8px 12px;
+                font-size: 0.85rem;
             }
             .form-row {
                 flex-direction: column;
@@ -544,7 +655,6 @@
                         <stop offset="100%" stop-color="#dceafd" />
                     </linearGradient>
                 </defs>
-                <!-- 3 Molar Teeth + Healthy/Inflamed Gum Line (matching user reference) -->
                 <path d="M 5 45 Q 25 35 45 42 Q 65 30 85 45 Q 105 32 125 45 Q 145 35 155 45 C 155 75 140 90 80 90 C 20 90 5 75 5 45 Z" fill="url(#gumGrad)" />
                 <path d="M 18 20 C 18 10, 25 8, 35 10 C 45 8, 50 10, 50 20 C 52 35, 52 50, 47 72 C 44 76, 40 75, 38 66 C 35 55, 30 55, 27 66 C 25 75, 21 76, 18 72 C 14 50, 16 35, 18 20 Z" fill="url(#toothGrad)" />
                 <path d="M 58 18 C 58 8, 65 6, 75 8 C 85 6, 90 8, 90 18 C 92 33, 92 48, 87 70 C 84 74, 80 73, 78 64 C 75 53, 70 53, 67 64 C 65 73, 61 74, 58 70 C 54 48, 56 33, 58 18 Z" fill="url(#toothGrad)" />
@@ -557,71 +667,79 @@
         </div>
 
         <nav class="nav-glass-bar">
-            <a href="#section-kk" class="nav-tab">Klinik Kesihatan</a>
-            <a href="#section-kp" class="nav-tab">Klinik Pergigian</a>
-            <a href="#section-doc" class="nav-tab">Surat Rujukan</a>
+            <a href="#section-kk" class="nav-tab" data-i18n="nav_kk">Klinik Kesihatan</a>
+            <a href="#section-kp" class="nav-tab" data-i18n="nav_kp">Klinik Pergigian</a>
+            <a href="#section-doc" class="nav-tab" data-i18n="nav_doc">Surat Rujukan</a>
         </nav>
+
+        <div class="lang-switch-container">
+            <div class="lang-pill-switch" id="lang-switch" onclick="toggleLang()" role="button" aria-label="Toggle Language EN / BM">
+                <div class="lang-pill-slider"></div>
+                <span class="lang-pill-opt opt-en">EN</span>
+                <span class="lang-pill-opt opt-bm">BM</span>
+            </div>
+        </div>
     </header>
 
     <h1 class="main-title">BPE T2DM Screening Tracker</h1>
 
     <div class="container">
-        <!-- Column 1: Medical Officers -->
+        <!-- Section: Klinik Kesihatan -->
         <div class="glass-card" id="section-kk">
-            <div class="card-header">🏥 Klinik Kesihatan (Medical)</div>
+            <div class="card-header">🏥 <span data-i18n="kk_title">Klinik Kesihatan (Perubatan)</span></div>
             <select id="kk-select" class="clinic-select">
-                <option value="" selected disabled>-- Select a Clinic --</option>
+                <option value="" selected disabled data-i18n="select_clinic">-- Sila Pilih Klinik --</option>
                 <option value="kb">Klinik Kesihatan Kota Bharu</option>
                 <option value="pc">Klinik Kesihatan Pengkalan Chepa</option>
                 <option value="kl">Klinik Kesihatan Kok Lanas</option>
             </select>
-            
+
             <div id="kk-content" class="hidden">
                 <div class="form-container">
                     <form id="kk-screening-form">
                         <div class="form-group">
-                            <label>1. Tarikh Kedatangan</label>
+                            <label>1. <span data-i18n="label_tarikh">Tarikh Kedatangan</span></label>
                             <input type="date" id="kk-tarikh" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>2. Nama Penuh Pesakit</label>
+                            <label>2. <span data-i18n="label_nama">Nama Penuh Pesakit</span></label>
                             <input type="text" id="kk-nama" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <div class="form-group">
-                            <label>3. No. IC Pesakit</label>
+                            <label>3. <span data-i18n="label_ic">No. IC Pesakit</span></label>
                             <input type="text" id="kk-ic" class="form-control" pattern="[0-9]*" title="Numbers only" required>
                         </div>
                         <div class="form-group">
-                            <label>4. Rujukan untuk BPE Screening</label>
+                            <label>4. <span data-i18n="label_rujukan_kk">Rujukan untuk Saringan BPE</span></label>
                             <select id="kk-rujukan" class="form-control" required>
-                                <option value="">Sila Pilih...</option>
-                                <option value="Dirujuk">Dirujuk</option>
-                                <option value="Enggan">Enggan</option>
+                                <option value="" data-i18n="select_please">Sila Pilih...</option>
+                                <option value="Dirujuk" data-i18n="opt_dirujuk">Dirujuk</option>
+                                <option value="Enggan" data-i18n="opt_enggan">Enggan</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>5. Nama Pegawai</label>
+                            <label>5. <span data-i18n="label_pegawai">Nama Pegawai</span></label>
                             <input type="text" id="kk-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
-                        <button type="submit" class="btn">Submit Record</button>
+                        <button type="submit" class="btn" data-i18n="btn_submit">Simpan Rekod</button>
                     </form>
                 </div>
 
                 <div class="table-container" style="margin-top: 10px;">
-                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;">Live Entries</h3>
+                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;" data-i18n="live_entries">Entri Langsung</h3>
                     <div class="month-filter-container">
-                        <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
+                        <label style="font-size: 0.9rem; font-weight: 500;" data-i18n="filter_label">Tapis:</label>
                         <input type="month" id="kk-month-filter" class="form-control">
-                        <button class="btn btn-small" onclick="exportExcelKK()">Export Monthly Excel (.xlsx)</button>
+                        <button class="btn btn-small" onclick="exportExcelKK()" data-i18n="btn_export">Eksport Excel Bulanan (.xlsx)</button>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Patient Name</th>
-                                <th>IC</th>
-                                <th>Status</th>
-                                <th>Tindakan</th>
+                                <th data-i18n="th_date">Tarikh</th>
+                                <th data-i18n="th_name">Nama Pesakit</th>
+                                <th data-i18n="th_ic">No. IC</th>
+                                <th data-i18n="th_status">Status</th>
+                                <th data-i18n="th_action">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="kk-tbody">
@@ -632,49 +750,49 @@
             </div>
         </div>
 
-        <!-- Column 2: Dental Officers -->
+        <!-- Section: Klinik Pergigian -->
         <div class="glass-card" id="section-kp">
-            <div class="card-header">🦷 Klinik Pergigian (Dental)</div>
+            <div class="card-header">🦷 <span data-i18n="kp_title">Klinik Pergigian (Pergigian)</span></div>
             <select id="kp-select" class="clinic-select">
-                <option value="" selected disabled>-- Select a Clinic --</option>
+                <option value="" selected disabled data-i18n="select_clinic">-- Sila Pilih Klinik --</option>
                 <option value="kb">Klinik Pergigian Kota Bharu</option>
                 <option value="pc">Klinik Pergigian Pengkalan Chepa</option>
                 <option value="kl">Klinik Pergigian Kok Lanas</option>
             </select>
-            
+
             <div id="kp-content" class="hidden">
                 <div class="form-container">
                     <form id="screening-form">
                         <div class="form-group">
-                            <label>1. Tarikh Kedatangan</label>
+                            <label>1. <span data-i18n="label_tarikh">Tarikh Kedatangan</span></label>
                             <input type="date" id="f-tarikh" class="form-control" required>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label>2. Nama Penuh Pesakit</label>
+                            <label>2. <span data-i18n="label_nama">Nama Penuh Pesakit</span></label>
                             <input type="text" id="f-nama" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label>3. No. IC Pesakit</label>
+                            <label>3. <span data-i18n="label_ic">No. IC Pesakit</span></label>
                             <input type="text" id="f-ic" class="form-control" pattern="[0-9]*" title="Numbers only" required>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group form-col">
-                                <label>4. No RN</label>
+                                <label>4. <span data-i18n="label_rn">No. RN</span></label>
                                 <input type="text" id="f-rn" class="form-control" pattern="[0-9]*" title="Numbers only" required>
                             </div>
                             <div class="form-group form-col">
-                                <label>5. Umur</label>
+                                <label>5. <span data-i18n="label_umur">Umur</span></label>
                                 <input type="text" id="f-umur" class="form-control" pattern="[0-9]*" title="Numbers only" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>6. Saringan Penyakit Periodontium dan Peri-implan</label>
+                            <label>6. <span data-i18n="label_saringan">Saringan Penyakit Periodontium dan Peri-implan</span></label>
                             <select id="f-saringan" class="form-control" required>
-                                <option value="">Sila Pilih...</option>
+                                <option value="" data-i18n="select_please">Sila Pilih...</option>
                                 <optgroup label="Non-Periodontitis">
                                     <option value="BPE 0">BPE 0</option>
                                     <option value="BPE 1">BPE 1</option>
@@ -688,57 +806,57 @@
                         </div>
 
                         <div class="form-group">
-                            <label>7. Rujukan Kepada Pakar Periodontik</label>
+                            <label>7. <span data-i18n="label_pakar_perio">Rujukan Kepada Pakar Periodontik</span></label>
                             <select id="f-pakar-perio" class="form-control" required>
-                                <option value="">Sila Pilih...</option>
-                                <option value="Ya">Ya</option>
-                                <option value="Tidak">Tidak</option>
-                                <option value="Enggan">Enggan</option>
+                                <option value="" data-i18n="select_please">Sila Pilih...</option>
+                                <option value="Ya" data-i18n="opt_ya">Ya</option>
+                                <option value="Tidak" data-i18n="opt_tidak">Tidak</option>
+                                <option value="Enggan" data-i18n="opt_enggan">Enggan</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>8. Rujukan Kepada Pakar Lain</label>
+                            <label>8. <span data-i18n="label_pakar_lain">Rujukan Kepada Pakar Lain</span></label>
                             <div class="checkbox-group">
                                 <label><input type="checkbox" name="f-pakar-lain" value="UPPKA"> UPPKA</label>
                                 <label><input type="checkbox" name="f-pakar-lain" value="SCD"> SCD</label>
-                                <label><input type="checkbox" name="f-pakar-lain" value="Tiada"> Tiada</label>
+                                <label><input type="checkbox" name="f-pakar-lain" value="Tiada"> <span data-i18n="opt_tiada">Tiada</span></label>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>9. Kes Selesai Periodontium</label>
+                            <label>9. <span data-i18n="label_selesai">Kes Selesai Periodontium</span></label>
                             <div class="radio-group">
-                                <label><input type="radio" name="f-selesai" value="Ya" required> Ya</label>
-                                <label><input type="radio" name="f-selesai" value="Tidak" required> Tidak</label>
+                                <label><input type="radio" name="f-selesai" value="Ya" required> <span data-i18n="opt_ya">Ya</span></label>
+                                <label><input type="radio" name="f-selesai" value="Tidak" required> <span data-i18n="opt_tidak">Tidak</span></label>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>10. Nama Pegawai</label>
+                            <label>10. <span data-i18n="label_pegawai">Nama Pegawai</span></label>
                             <input type="text" id="f-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
 
-                        <button type="submit" class="btn">Submit Record</button>
+                        <button type="submit" class="btn" data-i18n="btn_submit">Simpan Rekod</button>
                     </form>
                 </div>
-                
+
                 <div class="table-container" style="margin-top: 10px;">
-                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;">Live Entries</h3>
+                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;" data-i18n="live_entries">Entri Langsung</h3>
                     <div class="month-filter-container">
-                        <label style="font-size: 0.9rem; font-weight: 500;">Filter:</label>
+                        <label style="font-size: 0.9rem; font-weight: 500;" data-i18n="filter_label">Tapis:</label>
                         <input type="month" id="kp-month-filter" class="form-control">
-                        <button class="btn btn-small" onclick="exportExcelKP()">Export Monthly Excel (.xlsx)</button>
+                        <button class="btn btn-small" onclick="exportExcelKP()" data-i18n="btn_export">Eksport Excel Bulanan (.xlsx)</button>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Name</th>
-                                <th>IC</th>
-                                <th>BPE</th>
-                                <th>Completed</th>
-                                <th>Tindakan</th>
+                                <th data-i18n="th_date">Tarikh</th>
+                                <th data-i18n="th_name">Nama Pesakit</th>
+                                <th data-i18n="th_ic">No. IC</th>
+                                <th data-i18n="th_bpe">BPE</th>
+                                <th data-i18n="th_completed">Selesai</th>
+                                <th data-i18n="th_action">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="kp-tbody">
@@ -749,28 +867,28 @@
             </div>
         </div>
 
-        <!-- Column 3: Surat Rujukan -->
+        <!-- Section: Surat Rujukan -->
         <div class="glass-card doc-column" id="section-doc">
-            <div class="card-header">📁 Surat Rujukan</div>
-            
+            <div class="card-header">📁 <span data-i18n="doc_title">Surat Rujukan</span></div>
+
             <div class="doc-card">
-                <div class="doc-title">Garis Panduan Pengurusan Penyakit Periodontium</div>
+                <div class="doc-title" data-i18n="doc1_title">Garis Panduan Pengurusan Penyakit Periodontium</div>
                 <div class="doc-actions">
-                    <a href="Dokumen/Garis-Panduan-Pengurusan-Penyakit-Periodontium.pdf" download class="btn btn-download">Download</a>
+                    <a href="Dokumen/Garis-Panduan-Pengurusan-Penyakit-Periodontium.pdf" download class="btn btn-download" data-i18n="btn_download">Muat Turun</a>
                 </div>
             </div>
 
             <div class="doc-card">
-                <div class="doc-title">Slip Rujukan BPE</div>
+                <div class="doc-title" data-i18n="doc2_title">Slip Rujukan BPE</div>
                 <div class="doc-actions">
-                    <a href="Dokumen/Slip-Rujukan-BPE.pdf" download class="btn btn-download">Download</a>
+                    <a href="Dokumen/Slip-Rujukan-BPE.pdf" download class="btn btn-download" data-i18n="btn_download">Muat Turun</a>
                 </div>
             </div>
 
             <div class="doc-card">
-                <div class="doc-title">Surat Rujukan Periodontik</div>
+                <div class="doc-title" data-i18n="doc3_title">Surat Rujukan Periodontik</div>
                 <div class="doc-actions">
-                    <a href="Dokumen/Surat-Rujukan-Periodontik.pdf" download class="btn btn-download">Download</a>
+                    <a href="Dokumen/Surat-Rujukan-Periodontik.pdf" download class="btn btn-download" data-i18n="btn_download">Muat Turun</a>
                 </div>
             </div>
         </div>
@@ -788,6 +906,7 @@
             <p><strong>Date of Examination:</strong> ____________________________________________</p>
             <p><strong>Referring Clinic (KK):</strong> ____________________________________________</p>
             <p><strong>Dental Clinic (KP):</strong> _____________________________________________</p>
+
             
             <div class="bpe-grid">
                 <div class="bpe-cell"></div>
@@ -874,7 +993,7 @@
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">${t('empty_table')}</td></tr>`;
                 return;
             }
 
@@ -887,7 +1006,7 @@
                     <td>${patient.ic}</td>
                     <td><span class="badge ${statusClass}">${patient.rujukan}</span></td>
                     <td>
-                        <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kk">Padam</button>
+                        <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kk">${t('btn_padam')}</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -919,12 +1038,12 @@
             // --- Clinic dropdown validation (BEFORE disabling button) ---
             const clinicId = document.getElementById('kk-select').value;
             if (!clinicId || clinicId === '' || clinicId === 'select') {
-                alert('Sila pilih Klinik Kesihatan terlebih dahulu!');
+                alert(t('alert_no_clinic_kk'));
                 return;
             }
 
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
+            submitBtn.textContent = t('btn_saving');
 
             const formData = {
                 clinicId: clinicId,
@@ -940,21 +1059,21 @@
             db.ref('screenings/kk/' + clinicId).push(formData, function(error) {
                 submitBtn.disabled = false;
                 if (error) {
-                    alert('Gagal menyimpan rekod: ' + error.message);
-                    submitBtn.textContent = 'Submit Record';
+                    alert(t('alert_save_fail') + error.message);
+                    submitBtn.textContent = t('btn_submit_label');
                 } else {
                     form.reset();
                     document.getElementById('kk-tarikh').value = new Date().toISOString().split('T')[0];
-                    submitBtn.textContent = '✓ Saved Successfully';
+                    submitBtn.textContent = t('btn_saved');
                     submitBtn.style.background = '#28a745';
                     setTimeout(function() {
-                        submitBtn.textContent = 'Submit Record';
+                        submitBtn.textContent = t('btn_submit_label');
                         submitBtn.style.background = 'var(--accent-blue)';
                     }, 2000);
                 }
             }).catch(function(err) {
-                alert('Ralat Rangkaian/Database: ' + err.message);
-                submitBtn.textContent = 'Submit Record';
+                alert(t('alert_net_fail') + err.message);
+                submitBtn.textContent = t('btn_submit_label');
                 submitBtn.disabled = false;
             });
         });
@@ -972,7 +1091,7 @@
             }
             
             if (patients.length === 0) {
-                alert("Tiada data pesakit untuk bulan yang dipilih bagi " + clinicName);
+                alert(t('alert_no_data') + clinicName);
                 return;
             }
             
@@ -1024,7 +1143,7 @@
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888;">${t('empty_table')}</td></tr>`;
                 return;
             }
 
@@ -1037,7 +1156,7 @@
                     <td><span class="badge completed">${patient.saringan}</span></td>
                     <td>${patient.selesai}</td>
                     <td>
-                        <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kp">Padam</button>
+                        <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kp">${t('btn_padam')}</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1070,12 +1189,12 @@
             // --- Clinic dropdown validation (BEFORE disabling button) ---
             const clinicId = document.getElementById('kp-select').value;
             if (!clinicId || clinicId === '' || clinicId === 'select') {
-                alert('Sila pilih Klinik Pergigian terlebih dahulu!');
+                alert(t('alert_no_clinic_kp'));
                 return;
             }
 
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
+            submitBtn.textContent = t('btn_saving');
 
             const pakarLainCheckboxes = document.querySelectorAll('input[name="f-pakar-lain"]:checked');
             const pakarLainArr = Array.from(pakarLainCheckboxes).map(function(cb) { return cb.value; });
@@ -1099,21 +1218,21 @@
             db.ref('screenings/kp/' + clinicId).push(formData, function(error) {
                 submitBtn.disabled = false;
                 if (error) {
-                    alert('Gagal menyimpan rekod: ' + error.message);
-                    submitBtn.textContent = 'Submit Record';
+                    alert(t('alert_save_fail') + error.message);
+                    submitBtn.textContent = t('btn_submit_label');
                 } else {
                     form.reset();
                     document.getElementById('f-tarikh').value = new Date().toISOString().split('T')[0];
-                    submitBtn.textContent = '✓ Saved Successfully';
+                    submitBtn.textContent = t('btn_saved');
                     submitBtn.style.background = '#28a745';
                     setTimeout(function() {
-                        submitBtn.textContent = 'Submit Record';
+                        submitBtn.textContent = t('btn_submit_label');
                         submitBtn.style.background = 'var(--accent-blue)';
                     }, 2000);
                 }
             }).catch(function(err) {
-                alert('Ralat Rangkaian/Database: ' + err.message);
-                submitBtn.textContent = 'Submit Record';
+                alert(t('alert_net_fail') + err.message);
+                submitBtn.textContent = t('btn_submit_label');
                 submitBtn.disabled = false;
             });
         });
@@ -1132,7 +1251,7 @@
             }
             
             if (patients.length === 0) {
-                alert("Tiada data pesakit untuk bulan yang dipilih bagi " + clinicName);
+                alert(t('alert_no_data') + clinicName);
                 return;
             }
             
@@ -1170,20 +1289,187 @@
 
             if (!recordKey || !clinicId || !moduleType) return;
 
-            if (!confirm('Adakah anda pasti untuk memadam rekod ini?')) return;
+            if (!confirm(t('alert_del_confirm'))) return;
 
             db.ref('screenings/' + moduleType + '/' + clinicId + '/' + recordKey)
                 .remove()
                 .then(function() {
-                    alert('Rekod berjaya dipadam!');
+                    alert(t('alert_del_ok'));
                 })
                 .catch(function(error) {
-                    alert('Gagal memadam rekod: ' + error.message);
+                    alert(t('alert_del_fail') + error.message);
                 });
         });
 
+        // =====================================================
+        // BILINGUAL i18n ENGINE  (BM default / EN toggle)
+        // =====================================================
+        const i18n = {
+            bm: {
+                // Navigation
+                nav_kk:           'Klinik Kesihatan',
+                nav_kp:           'Klinik Pergigian',
+                nav_doc:          'Surat Rujukan',
+                // Section headers
+                kk_title:         'Klinik Kesihatan (Perubatan)',
+                kp_title:         'Klinik Pergigian (Pergigian)',
+                doc_title:        'Surat Rujukan',
+                // Clinic select placeholder
+                select_clinic:    '-- Sila Pilih Klinik --',
+                // Form labels
+                label_tarikh:     'Tarikh Kedatangan',
+                label_nama:       'Nama Penuh Pesakit',
+                label_ic:         'No. IC Pesakit',
+                label_rujukan_kk: 'Rujukan untuk Saringan BPE',
+                label_pegawai:    'Nama Pegawai',
+                label_rn:         'No. RN',
+                label_umur:       'Umur',
+                label_saringan:   'Saringan Penyakit Periodontium dan Peri-implan',
+                label_pakar_perio:'Rujukan Kepada Pakar Periodontik',
+                label_pakar_lain: 'Rujukan Kepada Pakar Lain',
+                label_selesai:    'Kes Selesai Periodontium',
+                // Select options
+                select_please:    'Sila Pilih...',
+                opt_dirujuk:      'Dirujuk',
+                opt_enggan:       'Enggan',
+                opt_ya:           'Ya',
+                opt_tidak:        'Tidak',
+                opt_tiada:        'Tiada',
+                // Buttons
+                btn_submit:       'Simpan Rekod',
+                btn_export:       'Eksport Excel Bulanan (.xlsx)',
+                btn_download:     'Muat Turun',
+                // Table headings
+                live_entries:     'Entri Langsung',
+                filter_label:     'Tapis:',
+                th_date:          'Tarikh',
+                th_name:          'Nama Pesakit',
+                th_ic:            'No. IC',
+                th_status:        'Status',
+                th_bpe:           'BPE',
+                th_completed:     'Selesai',
+                th_action:        'Tindakan',
+                // Document titles
+                doc1_title:       'Garis Panduan Pengurusan Penyakit Periodontium',
+                doc2_title:       'Slip Rujukan BPE',
+                doc3_title:       'Surat Rujukan Periodontik',
+                // Runtime strings (used in JS alerts / buttons)
+                btn_saving:       'Menyimpan...',
+                btn_saved:        '✓ Berjaya Disimpan',
+                btn_submit_label: 'Simpan Rekod',
+                btn_padam:        'Padam',
+                alert_no_clinic_kk: 'Sila pilih Klinik Kesihatan terlebih dahulu!',
+                alert_no_clinic_kp: 'Sila pilih Klinik Pergigian terlebih dahulu!',
+                alert_save_ok:    'Rekod berjaya disimpan!',
+                alert_save_fail:  'Gagal menyimpan rekod: ',
+                alert_net_fail:   'Ralat Rangkaian/Database: ',
+                alert_del_confirm:'Adakah anda pasti untuk memadam rekod ini?',
+                alert_del_ok:     'Rekod berjaya dipadam!',
+                alert_del_fail:   'Gagal memadam rekod: ',
+                alert_no_data:    'Tiada data pesakit untuk bulan yang dipilih bagi ',
+                empty_table:      'Tiada entri dijumpai untuk bulan ini',
+                // Lang button label (shown when currently in BM, clicking will go to EN)
+                lang_btn:         '🌐 ENG'
+            },
+            en: {
+                nav_kk:           'Health Clinic',
+                nav_kp:           'Dental Clinic',
+                nav_doc:          'Referral Letter',
+                kk_title:         'Health Clinic (Medical)',
+                kp_title:         'Dental Clinic (Dental)',
+                doc_title:        'Referral Letter',
+                select_clinic:    '-- Select a Clinic --',
+                label_tarikh:     'Date of Visit',
+                label_nama:       'Patient Full Name',
+                label_ic:         'Patient IC No.',
+                label_rujukan_kk: 'Referral for BPE Screening',
+                label_pegawai:    'Officer Name',
+                label_rn:         'RN No.',
+                label_umur:       'Age',
+                label_saringan:   'Periodontium & Peri-implant Screening',
+                label_pakar_perio:'Referral to Periodontic Specialist',
+                label_pakar_lain: 'Referral to Other Specialist',
+                label_selesai:    'Periodontium Case Completed',
+                select_please:    'Please Select...',
+                opt_dirujuk:      'Referred',
+                opt_enggan:       'Declined',
+                opt_ya:           'Yes',
+                opt_tidak:        'No',
+                opt_tiada:        'None',
+                btn_submit:       'Submit Record',
+                btn_export:       'Export Monthly Excel (.xlsx)',
+                btn_download:     'Download',
+                live_entries:     'Live Entries',
+                filter_label:     'Filter:',
+                th_date:          'Date',
+                th_name:          'Patient Name',
+                th_ic:            'IC',
+                th_status:        'Status',
+                th_bpe:           'BPE',
+                th_completed:     'Completed',
+                th_action:        'Action',
+                doc1_title:       'Periodontal Disease Management Guidelines',
+                doc2_title:       'BPE Referral Slip',
+                doc3_title:       'Periodontic Referral Letter',
+                btn_saving:       'Saving...',
+                btn_saved:        '✓ Saved Successfully',
+                btn_submit_label: 'Submit Record',
+                btn_padam:        'Delete',
+                alert_no_clinic_kk: 'Please select a Health Clinic first!',
+                alert_no_clinic_kp: 'Please select a Dental Clinic first!',
+                alert_save_ok:    'Record saved successfully!',
+                alert_save_fail:  'Failed to save record: ',
+                alert_net_fail:   'Network/Database Error: ',
+                alert_del_confirm:'Are you sure you want to delete this record?',
+                alert_del_ok:     'Record deleted successfully!',
+                alert_del_fail:   'Failed to delete record: ',
+                alert_no_data:    'No patient data for selected month at ',
+                empty_table:      'No entries found for this month',
+                lang_btn:         '🌐 BM'
+            }
+        };
+
+        // Active language — default BM, persisted in localStorage
+        let currentLang = localStorage.getItem('bpe_lang') || 'bm';
+
+        function t(key) {
+            return (i18n[currentLang] && i18n[currentLang][key]) || key;
+        }
+
+        function applyLang() {
+            const dict = i18n[currentLang];
+            // Update all [data-i18n] elements
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key] !== undefined) {
+                    el.textContent = dict[key];
+                }
+            });
+            // Update the pill switch state
+            const switcher = document.getElementById('lang-switch');
+            if (switcher) {
+                if (currentLang === 'bm') {
+                    switcher.classList.add('active-bm');
+                } else {
+                    switcher.classList.remove('active-bm');
+                }
+            }
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'bm' ? 'en' : 'bm';
+            localStorage.setItem('bpe_lang', currentLang);
+            applyLang();
+            // Re-render live tables so Padam/Delete buttons update
+            const kkClinic = document.getElementById('kk-select').value;
+            if (kkClinic) renderKK(kkClinic);
+            const kpClinic = document.getElementById('kp-select').value;
+            if (kpClinic) renderKP(kpClinic);
+        }
+
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
+            applyLang();
             const kkClinic = document.getElementById('kk-select').value;
             if (kkClinic) listenToKK(kkClinic);
             const kpClinic = document.getElementById('kp-select').value;
