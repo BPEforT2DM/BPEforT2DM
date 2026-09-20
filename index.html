@@ -1143,7 +1143,7 @@
                 </div>
 
                 <div class="table-container" style="margin-top: 10px;">
-                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;" data-i18n="live_entries">Entri Langsung</h3>
+                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;" data-i18n="live_entries">Rekod Bulanan</h3>
                     <div class="month-filter-container">
                         <label style="font-size: 0.9rem; font-weight: 500;" data-i18n="filter_label">Tapis:</label>
                         <input type="month" id="kk-month-filter" class="form-control">
@@ -1259,7 +1259,7 @@
                 </div>
 
                 <div class="table-container" style="margin-top: 10px;">
-                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;" data-i18n="live_entries">Entri Langsung</h3>
+                    <h3 style="margin: 0 0 12px 4px; font-size: 1.1rem; font-weight: 600;" data-i18n="live_entries">Rekod Bulanan</h3>
                     <div class="month-filter-container">
                         <label style="font-size: 0.9rem; font-weight: 500;" data-i18n="filter_label">Tapis:</label>
                         <input type="month" id="kp-month-filter" class="form-control">
@@ -1272,7 +1272,6 @@
                                 <th data-i18n="th_name">Nama Pesakit</th>
                                 <th data-i18n="th_ic">No. IC</th>
                                 <th data-i18n="th_bpe">BPE</th>
-                                <th data-i18n="th_completed">Selesai</th>
                                 <th data-i18n="th_action">Tindakan</th>
                             </tr>
                         </thead>
@@ -1560,7 +1559,7 @@
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888;">${t('empty_table')}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">${t('empty_table')}</td></tr>`;
                 return;
             }
 
@@ -1571,7 +1570,6 @@
                     <td style="font-weight: 500;">${patient.nama}</td>
                     <td>${patient.ic}</td>
                     <td><span class="badge completed">${patient.saringan}</span></td>
-                    <td>${patient.selesai}</td>
                     <td>
                         <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kp">${t('btn_padam')}</button>
                     </td>
@@ -2092,7 +2090,7 @@
                 btn_export:       'Eksport Excel Bulanan (.xlsx)',
                 btn_download:     'Muat Turun',
                 // Table headings
-                live_entries:     'Entri Langsung',
+                live_entries:     'Rekod Bulanan',
                 filter_label:     'Tapis:',
                 th_date:          'Tarikh',
                 th_name:          'Nama Pesakit',
@@ -2166,7 +2164,7 @@
                 btn_submit:       'Submit Record',
                 btn_export:       'Export Monthly Excel (.xlsx)',
                 btn_download:     'Download',
-                live_entries:     'Live Entries',
+                live_entries:     'Monthly Record',
                 filter_label:     'Filter:',
                 th_date:          'Date',
                 th_name:          'Patient Name',
