@@ -325,28 +325,83 @@
             border: 1px solid rgba(52, 199, 89, 0.2);
         }
 
-        /* Donut Chart & Badges */
+        /* Championship Unified Card & Donut Styles */
+        .champ-card-group {
+            grid-column: span 2;
+            padding: 18px 20px;
+        }
+
+        .champ-group-header {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+        }
+
+        .champ-master-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+
+        .champ-subgrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .champ-subcard {
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+        }
+
+        .champ-subcard:hover {
+            background: rgba(255, 255, 255, 0.65);
+            transform: translateY(-1px);
+        }
+
+        .champ-subcard-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
         .chart-wrapper {
             position: relative;
-            width: 96px;
-            height: 96px;
+            width: 92px;
+            height: 92px;
             margin: 6px auto 2px auto;
         }
 
         .champ-badge {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(0, 113, 227, 0.15);
-            border-radius: 20px;
-            padding: 5px 10px;
-            font-size: 0.78rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 113, 227, 0.18);
+            border-radius: 12px;
+            padding: 6px 10px;
+            font-size: 0.82rem;
             font-weight: 600;
             text-align: center;
             color: #1d1d1f;
-            margin-top: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-top: 8px;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.35;
             box-shadow: 0 2px 8px rgba(15, 43, 72, 0.04);
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .chart-legend-dots {
@@ -366,15 +421,16 @@
         }
 
         .chart-legend-dots .dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             display: inline-block;
         }
 
-        .dot-kb { background-color: #6c5ce7; }
-        .dot-kl { background-color: #74b9ff; }
-        .dot-pc { background-color: #a29bfe; }
+        /* High-Contrast Pastel Palette: Yellow, Pink, Green */
+        .dot-kb { background-color: #ffeaa7; border: 1px solid rgba(0, 0, 0, 0.18); }
+        .dot-kl { background-color: #ff7675; }
+        .dot-pc { background-color: #55efc4; }
 
         .container {
             display: grid;
@@ -783,15 +839,41 @@
                 font-size: 0.72rem;
                 padding: 3px 8px;
             }
+            /* Championship Mobile Card & Subgrid */
+            .champ-card-group {
+                grid-column: span 2;
+                padding: 14px 12px;
+            }
+            .champ-group-header {
+                margin-bottom: 10px;
+                padding-bottom: 6px;
+            }
+            .champ-master-title {
+                font-size: 1.02rem;
+            }
+            .champ-subgrid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.65rem;
+            }
+            .champ-subcard {
+                padding: 10px 8px;
+                border-radius: 12px;
+            }
+            .champ-subcard-title {
+                font-size: 0.85rem;
+            }
             .chart-wrapper {
-                width: 80px;
-                height: 80px;
+                width: 76px;
+                height: 76px;
                 margin: 4px auto;
             }
             .champ-badge {
-                font-size: 0.68rem;
-                padding: 4px 6px;
-                margin-top: 5px;
+                font-size: 0.75rem;
+                padding: 5px 6px;
+                line-height: 1.3;
+                min-height: 42px;
+                white-space: normal;
+                word-break: break-word;
             }
             .chart-legend-dots {
                 gap: 6px;
@@ -952,43 +1034,44 @@
             </div>
         </div>
 
-        <!-- Card 3: KK Breakdown Donut Chart -->
-        <div class="dash-card">
-            <div class="dash-card-header">
+        <!-- Unified BPE Championship Card (Cards 3 & 4) -->
+        <div class="dash-card champ-card-group">
+            <div class="dash-card-header champ-group-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle" data-i18n="dash_kk_breakdown">Pecahan KK</span>
-                    <div class="dash-card-title" data-i18n="dash_championship_kk">BPE Championship</div>
+                    <span class="dash-card-subtitle" data-i18n="dash_month_sub">Bulan Ini</span>
+                    <div class="dash-card-title champ-master-title">🏆 <span data-i18n="champ_master_title">Kejuaraan BPE</span></div>
                 </div>
                 <div class="dash-pill-icon pill-purple" aria-hidden="true">🏆</div>
             </div>
-            <div class="chart-wrapper">
-                <canvas id="chart-kk-donut" aria-label="KK Breakdown Donut Chart" role="img"></canvas>
-            </div>
-            <div class="champ-badge" id="badge-kk-top">🏆 Tertinggi: -</div>
-            <div class="chart-legend-dots">
-                <span><i class="dot dot-kb"></i> KB</span>
-                <span><i class="dot dot-kl"></i> KL</span>
-                <span><i class="dot dot-pc"></i> PC</span>
-            </div>
-        </div>
 
-        <!-- Card 4: KP Breakdown Donut Chart -->
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle" data-i18n="dash_kp_breakdown">Pecahan KP</span>
-                    <div class="dash-card-title" data-i18n="dash_championship_kp">BPE Championship</div>
+            <div class="champ-subgrid">
+                <!-- Card 3: Pecahan KK -->
+                <div class="champ-subcard">
+                    <div class="champ-subcard-title" data-i18n="dash_kk_breakdown">Pecahan KK</div>
+                    <div class="chart-wrapper">
+                        <canvas id="chart-kk-donut" aria-label="KK Breakdown Donut Chart" role="img"></canvas>
+                    </div>
+                    <div class="champ-badge" id="badge-kk-top">🏆 Tertinggi: -</div>
+                    <div class="chart-legend-dots">
+                        <span><i class="dot dot-kb"></i> KB</span>
+                        <span><i class="dot dot-kl"></i> KL</span>
+                        <span><i class="dot dot-pc"></i> PC</span>
+                    </div>
                 </div>
-                <div class="dash-pill-icon pill-amber" aria-hidden="true">🥇</div>
-            </div>
-            <div class="chart-wrapper">
-                <canvas id="chart-kp-donut" aria-label="KP Breakdown Donut Chart" role="img"></canvas>
-            </div>
-            <div class="champ-badge" id="badge-kp-top">🏆 Tertinggi: -</div>
-            <div class="chart-legend-dots">
-                <span><i class="dot dot-kb"></i> KB</span>
-                <span><i class="dot dot-kl"></i> KL</span>
-                <span><i class="dot dot-pc"></i> PC</span>
+
+                <!-- Card 4: Pecahan KP -->
+                <div class="champ-subcard">
+                    <div class="champ-subcard-title" data-i18n="dash_kp_breakdown">Pecahan KP</div>
+                    <div class="chart-wrapper">
+                        <canvas id="chart-kp-donut" aria-label="KP Breakdown Donut Chart" role="img"></canvas>
+                    </div>
+                    <div class="champ-badge" id="badge-kp-top">🏆 Tertinggi: -</div>
+                    <div class="chart-legend-dots">
+                        <span><i class="dot dot-kb"></i> KB</span>
+                        <span><i class="dot dot-kl"></i> KL</span>
+                        <span><i class="dot dot-pc"></i> PC</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1656,25 +1739,40 @@
                     animation: {
                         duration: 500
                     },
+                    interaction: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(29, 29, 31, 0.9)',
-                            titleFont: { size: 11, family: '-apple-system, sans-serif' },
-                            bodyFont: { size: 11, weight: 'bold', family: '-apple-system, sans-serif' },
-                            padding: 8,
-                            cornerRadius: 8,
+                            backgroundColor: 'rgba(29, 29, 31, 0.94)',
+                            titleFont: { size: 13, weight: 'bold', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' },
+                            bodyFont: { size: 11, family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' },
+                            padding: 10,
+                            cornerRadius: 10,
+                            displayColors: true,
                             filter: function(tooltipItem) {
                                 return tooltipItem.dataset.data.length > 1;
                             },
                             callbacks: {
+                                // Primary highlighted value: "[Jumlah] Kes" / "[Count] Cases"
+                                title: function(tooltipItems) {
+                                    if (!tooltipItems || !tooltipItems.length) return '';
+                                    const item = tooltipItems[0];
+                                    const val = item.parsed || 0;
+                                    const unit = currentLang === 'bm' ? 'Kes' : 'Cases';
+                                    return `${val} ${unit}`;
+                                },
+                                // Format: "[Nama Klinik]: [Jumlah] Kes"
                                 label: function(context) {
-                                    const label = context.label || '';
+                                    const clinic = context.label || '';
                                     const val = context.parsed || 0;
-                                    const unit = currentLang === 'bm' ? 'kes' : 'cases';
-                                    return ` ${label}: ${val} ${unit}`;
+                                    const unit = currentLang === 'bm' ? 'Kes' : 'Cases';
+                                    return ` ${clinic}: ${val} ${unit}`;
                                 }
                             }
                         }
@@ -1851,8 +1949,8 @@
                         kkCounts['KK Kok Lanas'],
                         kkCounts['KK Pengkalan Chepa']
                     ];
-                    chartKK.data.datasets[0].backgroundColor = ['#6c5ce7', '#74b9ff', '#a29bfe'];
-                    chartKK.data.datasets[0].borderColor = 'rgba(255, 255, 255, 0.9)';
+                    chartKK.data.datasets[0].backgroundColor = ['#ffeaa7', '#ff7675', '#55efc4'];
+                    chartKK.data.datasets[0].borderColor = 'rgba(255, 255, 255, 0.95)';
                 }
                 chartKK.update();
             }
@@ -1871,8 +1969,8 @@
                         kpCounts['KP Kok Lanas'],
                         kpCounts['KP Pengkalan Chepa']
                     ];
-                    chartKP.data.datasets[0].backgroundColor = ['#6c5ce7', '#74b9ff', '#a29bfe'];
-                    chartKP.data.datasets[0].borderColor = 'rgba(255, 255, 255, 0.9)';
+                    chartKP.data.datasets[0].backgroundColor = ['#ffeaa7', '#ff7675', '#55efc4'];
+                    chartKP.data.datasets[0].borderColor = 'rgba(255, 255, 255, 0.95)';
                 }
                 chartKP.update();
             }
@@ -1905,8 +2003,7 @@
                 dash_month_sub:       'Bulan Ini',
                 dash_kk_ref_title:    'Kes Dirujuk KK',
                 dash_kp_scr_title:    'Kes Disaring KP',
-                dash_championship_kk: 'BPE Championship',
-                dash_championship_kp: 'BPE Championship',
+                champ_master_title:   'Kejuaraan BPE',
                 dash_kk_breakdown:    'Pecahan KK',
                 dash_kp_breakdown:    'Pecahan KP',
                 dash_kk_tag:          'Semua 3 KK',
@@ -1984,8 +2081,7 @@
                 dash_month_sub:       'This Month',
                 dash_kk_ref_title:    'Referred from KK',
                 dash_kp_scr_title:    'Screened at KP',
-                dash_championship_kk: 'BPE Championship',
-                dash_championship_kp: 'BPE Championship',
+                champ_master_title:   'BPE Championship',
                 dash_kk_breakdown:    'KK Breakdown',
                 dash_kp_breakdown:    'KP Breakdown',
                 dash_kk_tag:          'All 3 KK Clinics',
