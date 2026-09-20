@@ -8,6 +8,9 @@
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
+    <!-- Chart.js for Interactive Donut Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -181,8 +184,197 @@
             color: #1d1d1f;
             letter-spacing: -0.5px;
             margin-top: 10px;
-            margin-bottom: 40px;
+            margin-bottom: 24px;
         }
+
+        /* Monthly Dashboard (Liquid Glassmorphism) */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            max-width: 1200px;
+            margin: 0 auto 36px auto;
+            box-sizing: border-box;
+        }
+
+        .dash-card {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(15, 43, 72, 0.06);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 36px rgba(15, 43, 72, 0.1);
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .dash-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .dash-card-header-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dash-card-subtitle {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+
+        .dash-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 3D Neumorphic / Pastel Pill Icons */
+        .dash-pill-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(15, 43, 72, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+        }
+
+        .pill-blue {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            color: #4338ca;
+        }
+
+        .pill-green {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #047857;
+        }
+
+        .pill-purple {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            color: #6d28d9;
+        }
+
+        .pill-amber {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #b45309;
+        }
+
+        .dash-metric {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1d1d1f;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin: 14px 0 8px 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        }
+
+        .dash-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .dash-tag {
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag-blue {
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--accent-blue);
+            border: 1px solid rgba(0, 113, 227, 0.15);
+        }
+
+        .tag-green {
+            background: rgba(52, 199, 89, 0.15);
+            color: #248a3d;
+            border: 1px solid rgba(52, 199, 89, 0.2);
+        }
+
+        /* Donut Chart & Badges */
+        .chart-wrapper {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            margin: 6px auto 2px auto;
+        }
+
+        .champ-badge {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 113, 227, 0.15);
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-align: center;
+            color: #1d1d1f;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 2px 8px rgba(15, 43, 72, 0.04);
+        }
+
+        .chart-legend-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 6px;
+            font-size: 0.72rem;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .chart-legend-dots span {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .chart-legend-dots .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-kb { background-color: #6c5ce7; }
+        .dot-kl { background-color: #74b9ff; }
+        .dot-pc { background-color: #a29bfe; }
 
         .container {
             display: grid;
@@ -560,6 +752,51 @@
             .doc-actions {
                 flex-direction: column;
             }
+            /* Dashboard Mobile 2x2 Grid Layout */
+            .dashboard-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.85rem;
+                margin-bottom: 24px;
+                padding: 0 2px;
+            }
+            .dash-card {
+                padding: 14px;
+                border-radius: 16px;
+            }
+            .dash-card-title {
+                font-size: 0.88rem;
+            }
+            .dash-card-subtitle {
+                font-size: 0.7rem;
+            }
+            .dash-pill-icon {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+                font-size: 1.05rem;
+            }
+            .dash-metric {
+                font-size: 1.9rem;
+                margin: 10px 0 6px 0;
+            }
+            .dash-tag {
+                font-size: 0.72rem;
+                padding: 3px 8px;
+            }
+            .chart-wrapper {
+                width: 80px;
+                height: 80px;
+                margin: 4px auto;
+            }
+            .champ-badge {
+                font-size: 0.68rem;
+                padding: 4px 6px;
+                margin-top: 5px;
+            }
+            .chart-legend-dots {
+                gap: 6px;
+                font-size: 0.66rem;
+            }
         }
 
         /* Printable Area */
@@ -682,6 +919,79 @@
     </header>
 
     <h1 class="main-title">BPE T2DM Screening Tracker</h1>
+
+    <!-- Interactive Monthly Dashboard -->
+    <section class="dashboard-container" id="monthly-dashboard" aria-label="Monthly Dashboard">
+        <!-- Card 1: Total KK Referrals (BPE Referred) -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-header-text">
+                    <span class="dash-card-subtitle" data-i18n="dash_month_sub">Bulan Ini</span>
+                    <div class="dash-card-title" data-i18n="dash_kk_ref_title">Kes Dirujuk KK</div>
+                </div>
+                <div class="dash-pill-icon pill-blue" aria-hidden="true">📋</div>
+            </div>
+            <div class="dash-metric" id="dash-kk-count">0</div>
+            <div class="dash-card-footer">
+                <span class="dash-tag tag-blue" data-i18n="dash_kk_tag">Semua 3 KK</span>
+            </div>
+        </div>
+
+        <!-- Card 2: Total KP Screenings (BPE Completed) -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-header-text">
+                    <span class="dash-card-subtitle" data-i18n="dash_month_sub">Bulan Ini</span>
+                    <div class="dash-card-title" data-i18n="dash_kp_scr_title">Kes Disaring KP</div>
+                </div>
+                <div class="dash-pill-icon pill-green" aria-hidden="true">🦷</div>
+            </div>
+            <div class="dash-metric" id="dash-kp-count">0</div>
+            <div class="dash-card-footer">
+                <span class="dash-tag tag-green" data-i18n="dash_kp_tag">Semua 3 KP</span>
+            </div>
+        </div>
+
+        <!-- Card 3: KK Breakdown Donut Chart -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-header-text">
+                    <span class="dash-card-subtitle" data-i18n="dash_kk_breakdown">Pecahan KK</span>
+                    <div class="dash-card-title" data-i18n="dash_championship_kk">BPE Championship</div>
+                </div>
+                <div class="dash-pill-icon pill-purple" aria-hidden="true">🏆</div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="chart-kk-donut" aria-label="KK Breakdown Donut Chart" role="img"></canvas>
+            </div>
+            <div class="champ-badge" id="badge-kk-top">🏆 Tertinggi: -</div>
+            <div class="chart-legend-dots">
+                <span><i class="dot dot-kb"></i> KB</span>
+                <span><i class="dot dot-kl"></i> KL</span>
+                <span><i class="dot dot-pc"></i> PC</span>
+            </div>
+        </div>
+
+        <!-- Card 4: KP Breakdown Donut Chart -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div class="dash-card-header-text">
+                    <span class="dash-card-subtitle" data-i18n="dash_kp_breakdown">Pecahan KP</span>
+                    <div class="dash-card-title" data-i18n="dash_championship_kp">BPE Championship</div>
+                </div>
+                <div class="dash-pill-icon pill-amber" aria-hidden="true">🥇</div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="chart-kp-donut" aria-label="KP Breakdown Donut Chart" role="img"></canvas>
+            </div>
+            <div class="champ-badge" id="badge-kp-top">🏆 Tertinggi: -</div>
+            <div class="chart-legend-dots">
+                <span><i class="dot dot-kb"></i> KB</span>
+                <span><i class="dot dot-kl"></i> KL</span>
+                <span><i class="dot dot-pc"></i> PC</span>
+            </div>
+        </div>
+    </section>
 
     <div class="container">
         <!-- Section: Klinik Kesihatan -->
@@ -1302,6 +1612,283 @@
         });
 
         // =====================================================
+        // MONTHLY DASHBOARD REALTIME ENGINE & CHARTS
+        // =====================================================
+        let chartKK = null;
+        let chartKP = null;
+
+        const latestDashboardStats = {
+            kkTotal: 0,
+            kpTotal: 0,
+            kkCounts: { 'KK Kota Bharu': 0, 'KK Kok Lanas': 0, 'KK Pengkalan Chepa': 0 },
+            kpCounts: { 'KP Kota Bharu': 0, 'KP Kok Lanas': 0, 'KP Pengkalan Chepa': 0 }
+        };
+
+        function getCurrentYearMonth() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            return `${y}-${m}`;
+        }
+
+        function isRecordInMonth(rec, targetMonth) {
+            if (!rec) return false;
+            if (rec.tarikh && typeof rec.tarikh === 'string' && rec.tarikh.trim() !== '') {
+                return rec.tarikh.startsWith(targetMonth);
+            }
+            if (rec.createdAt) {
+                const d = new Date(rec.createdAt);
+                if (!isNaN(d.getTime())) {
+                    const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                    return ym === targetMonth;
+                }
+            }
+            return false;
+        }
+
+        function initDonutCharts() {
+            const commonChartConfig = {
+                type: 'doughnut',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    animation: {
+                        duration: 500
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(29, 29, 31, 0.9)',
+                            titleFont: { size: 11, family: '-apple-system, sans-serif' },
+                            bodyFont: { size: 11, weight: 'bold', family: '-apple-system, sans-serif' },
+                            padding: 8,
+                            cornerRadius: 8,
+                            filter: function(tooltipItem) {
+                                return tooltipItem.dataset.data.length > 1;
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const val = context.parsed || 0;
+                                    const unit = currentLang === 'bm' ? 'kes' : 'cases';
+                                    return ` ${label}: ${val} ${unit}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const ctxKK = document.getElementById('chart-kk-donut');
+            if (ctxKK) {
+                chartKK = new Chart(ctxKK, {
+                    ...commonChartConfig,
+                    data: {
+                        labels: ['Empty'],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: ['rgba(0, 113, 227, 0.08)'],
+                            borderColor: ['transparent'],
+                            borderWidth: 2,
+                            hoverOffset: 3
+                        }]
+                    }
+                });
+            }
+
+            const ctxKP = document.getElementById('chart-kp-donut');
+            if (ctxKP) {
+                chartKP = new Chart(ctxKP, {
+                    ...commonChartConfig,
+                    data: {
+                        labels: ['Empty'],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: ['rgba(0, 113, 227, 0.08)'],
+                            borderColor: ['transparent'],
+                            borderWidth: 2,
+                            hoverOffset: 3
+                        }]
+                    }
+                });
+            }
+        }
+
+        function renderDashboardBadges() {
+            const kkBadge = document.getElementById('badge-kk-top');
+            const kpBadge = document.getElementById('badge-kp-top');
+
+            // KK Top Performer Badge
+            if (kkBadge) {
+                const kkCounts = latestDashboardStats.kkCounts;
+                const kkMax = Math.max(
+                    kkCounts['KK Kota Bharu'] || 0,
+                    kkCounts['KK Kok Lanas'] || 0,
+                    kkCounts['KK Pengkalan Chepa'] || 0
+                );
+
+                if (kkMax === 0) {
+                    kkBadge.textContent = t('dash_no_data');
+                } else {
+                    const topClinics = ['KK Kota Bharu', 'KK Kok Lanas', 'KK Pengkalan Chepa']
+                        .filter(c => kkCounts[c] === kkMax);
+                    const clinicText = topClinics.join(' & ');
+                    kkBadge.textContent = `${t('dash_top_prefix')}${clinicText} (${kkMax}${t('dash_cases_suffix')})`;
+                }
+            }
+
+            // KP Top Performer Badge
+            if (kpBadge) {
+                const kpCounts = latestDashboardStats.kpCounts;
+                const kpMax = Math.max(
+                    kpCounts['KP Kota Bharu'] || 0,
+                    kpCounts['KP Kok Lanas'] || 0,
+                    kpCounts['KP Pengkalan Chepa'] || 0
+                );
+
+                if (kpMax === 0) {
+                    kpBadge.textContent = t('dash_no_data');
+                } else {
+                    const topClinics = ['KP Kota Bharu', 'KP Kok Lanas', 'KP Pengkalan Chepa']
+                        .filter(c => kpCounts[c] === kpMax);
+                    const clinicText = topClinics.join(' & ');
+                    kpBadge.textContent = `${t('dash_top_prefix')}${clinicText} (${kpMax}${t('dash_cases_suffix')})`;
+                }
+            }
+        }
+
+        function updateMonthlyDashboard(screeningsData) {
+            const data = screeningsData || {};
+            const curMonth = getCurrentYearMonth();
+
+            // 1. Calculate KK Referred Totals (Card 1 & Card 3)
+            let totalKkReferred = 0;
+            const kkCounts = {
+                'KK Kota Bharu': 0,
+                'KK Kok Lanas': 0,
+                'KK Pengkalan Chepa': 0
+            };
+
+            const kkCodeMap = {
+                'kb': 'KK Kota Bharu',
+                'kl': 'KK Kok Lanas',
+                'pc': 'KK Pengkalan Chepa'
+            };
+
+            if (data.kk) {
+                Object.keys(kkCodeMap).forEach(code => {
+                    const clinicRecords = data.kk[code] || {};
+                    let clinicCount = 0;
+                    Object.keys(clinicRecords).forEach(k => {
+                        const rec = clinicRecords[k];
+                        if (isRecordInMonth(rec, curMonth)) {
+                            if (rec.rujukan === 'Dirujuk') {
+                                clinicCount++;
+                                totalKkReferred++;
+                            }
+                        }
+                    });
+                    kkCounts[kkCodeMap[code]] = clinicCount;
+                });
+            }
+
+            // 2. Calculate KP Screened Totals (Card 2 & Card 4)
+            let totalKpScreened = 0;
+            const kpCounts = {
+                'KP Kota Bharu': 0,
+                'KP Kok Lanas': 0,
+                'KP Pengkalan Chepa': 0
+            };
+
+            const kpCodeMap = {
+                'kb': 'KP Kota Bharu',
+                'kl': 'KP Kok Lanas',
+                'pc': 'KP Pengkalan Chepa'
+            };
+
+            if (data.kp) {
+                Object.keys(kpCodeMap).forEach(code => {
+                    const clinicRecords = data.kp[code] || {};
+                    let clinicCount = 0;
+                    Object.keys(clinicRecords).forEach(k => {
+                        const rec = clinicRecords[k];
+                        if (isRecordInMonth(rec, curMonth)) {
+                            clinicCount++;
+                            totalKpScreened++;
+                        }
+                    });
+                    kpCounts[kpCodeMap[code]] = clinicCount;
+                });
+            }
+
+            // Store in state
+            latestDashboardStats.kkTotal = totalKkReferred;
+            latestDashboardStats.kpTotal = totalKpScreened;
+            latestDashboardStats.kkCounts = kkCounts;
+            latestDashboardStats.kpCounts = kpCounts;
+
+            // Update DOM numbers
+            const kkCountEl = document.getElementById('dash-kk-count');
+            if (kkCountEl) kkCountEl.textContent = totalKkReferred;
+
+            const kpCountEl = document.getElementById('dash-kp-count');
+            if (kpCountEl) kpCountEl.textContent = totalKpScreened;
+
+            // Update KK Chart
+            if (chartKK) {
+                if (totalKkReferred === 0) {
+                    chartKK.data.labels = ['Empty'];
+                    chartKK.data.datasets[0].data = [1];
+                    chartKK.data.datasets[0].backgroundColor = ['rgba(0, 113, 227, 0.08)'];
+                    chartKK.data.datasets[0].borderColor = ['transparent'];
+                } else {
+                    chartKK.data.labels = ['KK Kota Bharu', 'KK Kok Lanas', 'KK Pengkalan Chepa'];
+                    chartKK.data.datasets[0].data = [
+                        kkCounts['KK Kota Bharu'],
+                        kkCounts['KK Kok Lanas'],
+                        kkCounts['KK Pengkalan Chepa']
+                    ];
+                    chartKK.data.datasets[0].backgroundColor = ['#6c5ce7', '#74b9ff', '#a29bfe'];
+                    chartKK.data.datasets[0].borderColor = 'rgba(255, 255, 255, 0.9)';
+                }
+                chartKK.update();
+            }
+
+            // Update KP Chart
+            if (chartKP) {
+                if (totalKpScreened === 0) {
+                    chartKP.data.labels = ['Empty'];
+                    chartKP.data.datasets[0].data = [1];
+                    chartKP.data.datasets[0].backgroundColor = ['rgba(0, 113, 227, 0.08)'];
+                    chartKP.data.datasets[0].borderColor = ['transparent'];
+                } else {
+                    chartKP.data.labels = ['KP Kota Bharu', 'KP Kok Lanas', 'KP Pengkalan Chepa'];
+                    chartKP.data.datasets[0].data = [
+                        kpCounts['KP Kota Bharu'],
+                        kpCounts['KP Kok Lanas'],
+                        kpCounts['KP Pengkalan Chepa']
+                    ];
+                    chartKP.data.datasets[0].backgroundColor = ['#6c5ce7', '#74b9ff', '#a29bfe'];
+                    chartKP.data.datasets[0].borderColor = 'rgba(255, 255, 255, 0.9)';
+                }
+                chartKP.update();
+            }
+
+            // Render competitive badges
+            renderDashboardBadges();
+        }
+
+        function listenToDashboard() {
+            db.ref('screenings').on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                updateMonthlyDashboard(data);
+            });
+        }
+
+        // =====================================================
         // BILINGUAL i18n ENGINE  (BM default / EN toggle)
         // =====================================================
         const i18n = {
@@ -1314,6 +1901,19 @@
                 kk_title:         'Klinik Kesihatan (Perubatan)',
                 kp_title:         'Klinik Pergigian (Pergigian)',
                 doc_title:        'Surat Rujukan',
+                // Monthly Dashboard
+                dash_month_sub:       'Bulan Ini',
+                dash_kk_ref_title:    'Kes Dirujuk KK',
+                dash_kp_scr_title:    'Kes Disaring KP',
+                dash_championship_kk: 'BPE Championship',
+                dash_championship_kp: 'BPE Championship',
+                dash_kk_breakdown:    'Pecahan KK',
+                dash_kp_breakdown:    'Pecahan KP',
+                dash_kk_tag:          'Semua 3 KK',
+                dash_kp_tag:          'Semua 3 KP',
+                dash_no_data:         '🏆 Tiada data bulan ini',
+                dash_top_prefix:      '🏆 Tertinggi: ',
+                dash_cases_suffix:    ' kes',
                 // Clinic select placeholder
                 select_clinic:    '-- Sila Pilih Klinik --',
                 // Form labels
@@ -1372,12 +1972,28 @@
                 lang_btn:         '🌐 ENG'
             },
             en: {
+                // Navigation
                 nav_kk:           'Health Clinic',
                 nav_kp:           'Dental Clinic',
                 nav_doc:          'Referral Letter',
+                // Section headers
                 kk_title:         'Health Clinic (Medical)',
                 kp_title:         'Dental Clinic (Dental)',
                 doc_title:        'Referral Letter',
+                // Monthly Dashboard
+                dash_month_sub:       'This Month',
+                dash_kk_ref_title:    'Referred from KK',
+                dash_kp_scr_title:    'Screened at KP',
+                dash_championship_kk: 'BPE Championship',
+                dash_championship_kp: 'BPE Championship',
+                dash_kk_breakdown:    'KK Breakdown',
+                dash_kp_breakdown:    'KP Breakdown',
+                dash_kk_tag:          'All 3 KK Clinics',
+                dash_kp_tag:          'All 3 KP Clinics',
+                dash_no_data:         '🏆 No data this month',
+                dash_top_prefix:      '🏆 Top: ',
+                dash_cases_suffix:    ' cases',
+                // Clinic select placeholder
                 select_clinic:    '-- Select a Clinic --',
                 label_tarikh:     'Date of Visit',
                 label_nama:       'Patient Full Name',
@@ -1454,6 +2070,8 @@
                     switcher.classList.remove('active-bm');
                 }
             }
+            // Update dashboard badges dynamically
+            renderDashboardBadges();
         }
 
         function toggleLang() {
@@ -1469,7 +2087,9 @@
 
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
+            initDonutCharts();
             applyLang();
+            listenToDashboard();
             const kkClinic = document.getElementById('kk-select').value;
             if (kkClinic) listenToKK(kkClinic);
             const kpClinic = document.getElementById('kp-select').value;
