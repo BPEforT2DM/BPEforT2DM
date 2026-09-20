@@ -432,6 +432,30 @@
         .dot-kl { background-color: #ff7675; }
         .dot-pc { background-color: #55efc4; }
 
+        /* Cute Popover Tooltip (Pastel Liquid Glass Aesthetic) */
+        .chartjs-popover-tooltip {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            border-radius: 12px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 16px rgba(15, 43, 72, 0.12);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            line-height: 1.2;
+            pointer-events: none;
+            white-space: nowrap;
+            text-align: center;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+
         .container {
             display: grid;
             grid-template-columns: 1fr;
@@ -1729,6 +1753,44 @@
             return false;
         }
 
+        // Custom Cute Popover Tooltip for Donut Charts (Pastel Liquid Glass Aesthetic)
+        function customDonutTooltip(context) {
+            const { chart, tooltip } = context;
+            const parent = chart.canvas.parentNode;
+            let tooltipEl = parent.querySelector('.chartjs-popover-tooltip');
+
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.className = 'chartjs-popover-tooltip';
+                parent.appendChild(tooltipEl);
+            }
+
+            // Hide if tooltip opacity is 0 or empty placeholder data (<= 1 slice)
+            if (tooltip.opacity === 0 || !tooltip.dataPoints || !tooltip.dataPoints.length) {
+                tooltipEl.style.opacity = '0';
+                tooltipEl.style.visibility = 'hidden';
+                return;
+            }
+
+            const dataPoint = tooltip.dataPoints[0];
+            if (dataPoint.dataset.data.length <= 1) {
+                tooltipEl.style.opacity = '0';
+                tooltipEl.style.visibility = 'hidden';
+                return;
+            }
+
+            // Strictly format: "[Nama Klinik] ([Jumlah Rekod])" e.g. "KK Kota Bharu (2)"
+            const clinic = dataPoint.label || '';
+            const val = dataPoint.parsed || 0;
+            tooltipEl.textContent = `${clinic} (${val})`;
+
+            // Position centered directly over the hovered segment
+            tooltipEl.style.left = tooltip.caretX + 'px';
+            tooltipEl.style.top = (tooltip.caretY - 8) + 'px';
+            tooltipEl.style.opacity = '1';
+            tooltipEl.style.visibility = 'visible';
+        }
+
         function initDonutCharts() {
             const commonChartConfig = {
                 type: 'doughnut',
@@ -1749,30 +1811,15 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(29, 29, 31, 0.94)',
-                            titleFont: { size: 13, weight: 'bold', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' },
-                            bodyFont: { size: 11, family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' },
-                            padding: 10,
-                            cornerRadius: 10,
-                            displayColors: true,
-                            filter: function(tooltipItem) {
-                                return tooltipItem.dataset.data.length > 1;
-                            },
+                            enabled: false,
+                            external: customDonutTooltip,
+                            displayColors: false,
                             callbacks: {
-                                // Primary highlighted value: "[Jumlah] Kes" / "[Count] Cases"
-                                title: function(tooltipItems) {
-                                    if (!tooltipItems || !tooltipItems.length) return '';
-                                    const item = tooltipItems[0];
-                                    const val = item.parsed || 0;
-                                    const unit = currentLang === 'bm' ? 'Kes' : 'Cases';
-                                    return `${val} ${unit}`;
-                                },
-                                // Format: "[Nama Klinik]: [Jumlah] Kes"
+                                title: function() { return ''; },
                                 label: function(context) {
                                     const clinic = context.label || '';
                                     const val = context.parsed || 0;
-                                    const unit = currentLang === 'bm' ? 'Kes' : 'Cases';
-                                    return ` ${clinic}: ${val} ${unit}`;
+                                    return `${clinic} (${val})`;
                                 }
                             }
                         }
@@ -1782,6 +1829,10 @@
 
             const ctxKK = document.getElementById('chart-kk-donut');
             if (ctxKK) {
+                ctxKK.addEventListener('mouseleave', () => {
+                    const tip = ctxKK.parentNode.querySelector('.chartjs-popover-tooltip');
+                    if (tip) { tip.style.opacity = '0'; tip.style.visibility = 'hidden'; }
+                });
                 chartKK = new Chart(ctxKK, {
                     ...commonChartConfig,
                     data: {
@@ -1799,6 +1850,10 @@
 
             const ctxKP = document.getElementById('chart-kp-donut');
             if (ctxKP) {
+                ctxKP.addEventListener('mouseleave', () => {
+                    const tip = ctxKP.parentNode.querySelector('.chartjs-popover-tooltip');
+                    if (tip) { tip.style.opacity = '0'; tip.style.visibility = 'hidden'; }
+                });
                 chartKP = new Chart(ctxKP, {
                     ...commonChartConfig,
                     data: {
