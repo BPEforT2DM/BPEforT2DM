@@ -275,6 +275,26 @@
         .badge.referred { background: rgba(52, 199, 89, 0.15); color: #248a3d; }
         .badge.pending { background: rgba(255, 149, 0, 0.15); color: #cc7a00; }
         .badge.completed { background: rgba(0, 113, 227, 0.15); color: #005bb5; }
+
+        /* Delete / Padam Button */
+        .btn-padam {
+            background: rgba(255, 77, 79, 0.12);
+            color: #cf1322;
+            border: 1px solid rgba(255, 77, 79, 0.35);
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn-padam:hover {
+            background: rgba(255, 77, 79, 0.25);
+            border-color: rgba(255, 77, 79, 0.6);
+            transform: translateY(-1px);
+        }
         
         /* Buttons */
         .btn {
@@ -604,6 +624,7 @@
                                 <th>Patient Name</th>
                                 <th>IC</th>
                                 <th>Status</th>
+                                <th>Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="kk-tbody">
@@ -720,6 +741,7 @@
                                 <th>IC</th>
                                 <th>BPE</th>
                                 <th>Completed</th>
+                                <th>Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="kp-tbody">
@@ -846,29 +868,32 @@
         function renderKK(clinicId) {
             const tbody = document.getElementById('kk-tbody');
             tbody.innerHTML = '';
-            
+
             const filterMonth = document.getElementById('kk-month-filter').value;
             let patients = kkData || [];
-            
+
             if (filterMonth) {
                 patients = patients.filter(p => p.tarikh && p.tarikh.startsWith(filterMonth));
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
                 return;
             }
 
             patients.forEach(patient => {
                 const statusClass = patient.rujukan === 'Dirujuk' ? 'referred' : 'pending';
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${patient.tarikh}</td>
-                        <td style="font-weight: 500;">${patient.nama}</td>
-                        <td>${patient.ic}</td>
-                        <td><span class="badge ${statusClass}">${patient.rujukan}</span></td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${patient.tarikh}</td>
+                    <td style="font-weight: 500;">${patient.nama}</td>
+                    <td>${patient.ic}</td>
+                    <td><span class="badge ${statusClass}">${patient.rujukan}</span></td>
+                    <td>
+                        <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kk">Padam</button>
+                    </td>
                 `;
+                tbody.appendChild(tr);
             });
         }
 
@@ -993,29 +1018,32 @@
         function renderKP(clinicId) {
             const tbody = document.getElementById('kp-tbody');
             tbody.innerHTML = '';
-            
+
             const filterMonth = document.getElementById('kp-month-filter').value;
             let patients = kpData || [];
-            
+
             if (filterMonth) {
                 patients = patients.filter(p => p.tarikh && p.tarikh.startsWith(filterMonth));
             }
 
             if (patients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">No entries found for this month</td></tr>';
                 return;
             }
 
             patients.forEach(patient => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${patient.tarikh}</td>
-                        <td style="font-weight: 500;">${patient.nama}</td>
-                        <td>${patient.ic}</td>
-                        <td><span class="badge completed">${patient.saringan}</span></td>
-                        <td>${patient.selesai}</td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${patient.tarikh}</td>
+                    <td style="font-weight: 500;">${patient.nama}</td>
+                    <td>${patient.ic}</td>
+                    <td><span class="badge completed">${patient.saringan}</span></td>
+                    <td>${patient.selesai}</td>
+                    <td>
+                        <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kp">Padam</button>
+                    </td>
                 `;
+                tbody.appendChild(tr);
             });
         }
 
@@ -1133,6 +1161,29 @@
             const suffix = filterMonth ? filterMonth : new Date().toISOString().split('T')[0];
             XLSX.writeFile(wb, `BPE_KP_Report_${clinicId.toUpperCase()}_${suffix}.xlsx`);
         }
+
+        // --- PADAM (DELETE) — Event-delegated handler for both tables ---
+        document.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('btn-padam')) return;
+
+            const btn       = e.target;
+            const recordKey = btn.getAttribute('data-key');
+            const clinicId  = btn.getAttribute('data-clinic');
+            const moduleType = btn.getAttribute('data-module'); // 'kk' or 'kp'
+
+            if (!recordKey || !clinicId || !moduleType) return;
+
+            if (!confirm('Adakah anda pasti untuk memadam rekod ini?')) return;
+
+            db.ref('screenings/' + moduleType + '/' + clinicId + '/' + recordKey)
+                .remove()
+                .then(function() {
+                    alert('Rekod berjaya dipadam!');
+                })
+                .catch(function(error) {
+                    alert('Gagal memadam rekod: ' + error.message);
+                });
+        });
 
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
