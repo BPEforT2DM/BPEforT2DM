@@ -427,54 +427,57 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         }
 
-        /* 3-Column Clinic Micro-Grid for Cards 1 & 2 */
+        /* Vertical Stacked Clinic List for Cards 1 & 2 (Desktop) */
         .dash-subgrid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin: 8px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 10px 0 12px 0;
             width: 100%;
             box-sizing: border-box;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
         .dash-subcard {
-            background: rgba(255, 255, 255, 0.52);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            padding: 7px 4px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            text-align: center;
-            transition: all 0.25s ease;
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            background: transparent;
+            transition: background 0.2s ease;
             box-sizing: border-box;
-            min-height: 64px;
-            box-shadow: 0 2px 6px rgba(15, 43, 72, 0.03);
+            gap: 8px;
+        }
+
+        .dash-subcard:last-child {
+            border-bottom: none;
         }
 
         .dash-subcard:hover {
-            background: rgba(255, 255, 255, 0.85);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(15, 43, 72, 0.06);
+            background: rgba(255, 255, 255, 0.55);
         }
 
         .dash-subcard-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 100%;
-            margin-bottom: 4px;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
         }
 
         .dash-subcard-name {
-            font-size: 0.68rem;
-            font-weight: 700;
+            font-size: 0.78rem;
+            font-weight: 600;
             color: #2c2c2e;
-            line-height: 1.15;
-            text-align: center;
-            word-break: break-word;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .dash-subcard-name .subcard-name-short {
@@ -486,12 +489,12 @@
         }
 
         .dash-subcard-val {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: #1d1d1f;
             line-height: 1;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-            margin-top: auto;
+            flex-shrink: 0;
         }
 
         .dot {
@@ -1099,26 +1102,46 @@
                 margin: 2px 0 0 0;
             }
             .dash-subgrid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
                 gap: 4px;
                 margin: 6px 0 8px 0;
+                border-radius: 10px;
+                overflow: hidden;
+                background: rgba(255, 255, 255, 0.35);
+                border: 1px solid rgba(255, 255, 255, 0.6);
             }
             .dash-subcard {
-                padding: 6px 2px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 6px 4px;
+                border-bottom: none;
+                border-right: 1px solid rgba(255, 255, 255, 0.4);
+                gap: 4px;
+                text-align: center;
                 min-height: 52px;
-                border-radius: 10px;
+            }
+            .dash-subcard:last-child {
+                border-right: none;
+            }
+            .dash-subcard-header {
+                justify-content: center;
+                flex: unset;
             }
             .dash-subcard-name .subcard-name-full {
                 display: none;
             }
             .dash-subcard-name .subcard-name-short {
                 display: inline;
+                font-size: 0.65rem;
+                font-weight: 700;
+                text-align: center;
+                white-space: normal;
             }
             .dash-subcard-val {
                 font-size: 1.05rem;
-            }
-            .dash-tag {
-                font-size: 0.72rem;
-                padding: 3px 8px;
+                flex-shrink: unset;
             }
             /* Championship Mobile Card & Subgrid */
             .champ-card-group {
@@ -1358,10 +1381,6 @@
                     <div class="dash-subcard-val" id="dash-kk-pc-count">0</div>
                 </div>
             </div>
-
-            <div class="dash-card-footer">
-                <span class="dash-tag tag-blue" data-i18n="dash_kk_tag">Semua 3 KK</span>
-            </div>
         </div>
 
         <!-- Card 2: Total KP Screenings (BPE Completed) -->
@@ -1412,10 +1431,6 @@
                     </div>
                     <div class="dash-subcard-val" id="dash-kp-pc-count">0</div>
                 </div>
-            </div>
-
-            <div class="dash-card-footer">
-                <span class="dash-tag tag-green" data-i18n="dash_kp_tag">Semua 3 KP</span>
             </div>
         </div>
 
