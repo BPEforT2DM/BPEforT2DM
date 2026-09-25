@@ -403,14 +403,103 @@
             color: #b45309;
         }
 
+        .dash-total-box {
+            margin: 6px 0 8px 0;
+        }
+
+        .dash-total-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 2px;
+        }
+
         .dash-metric {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #1d1d1f;
             letter-spacing: -1px;
             line-height: 1;
-            margin: 14px 0 8px 0;
+            margin: 2px 0 0 0;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* 3-Column Clinic Micro-Grid for Cards 1 & 2 */
+        .dash-subgrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin: 8px 0 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .dash-subcard {
+            background: rgba(255, 255, 255, 0.52);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 7px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+            min-height: 64px;
+            box-shadow: 0 2px 6px rgba(15, 43, 72, 0.03);
+        }
+
+        .dash-subcard:hover {
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 43, 72, 0.06);
+        }
+
+        .dash-subcard-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .dash-subcard-name {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #2c2c2e;
+            line-height: 1.15;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .dash-subcard-name .subcard-name-short {
+            display: none;
+        }
+
+        .dash-subcard-name .subcard-name-full {
+            display: inline;
+        }
+
+        .dash-subcard-val {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1d1d1f;
+            line-height: 1;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            margin-top: auto;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
         }
 
         .dash-card-footer {
@@ -1006,8 +1095,26 @@
                 font-size: 1.05rem;
             }
             .dash-metric {
-                font-size: 1.9rem;
-                margin: 10px 0 6px 0;
+                font-size: 1.65rem;
+                margin: 2px 0 0 0;
+            }
+            .dash-subgrid {
+                gap: 4px;
+                margin: 6px 0 8px 0;
+            }
+            .dash-subcard {
+                padding: 6px 2px;
+                min-height: 52px;
+                border-radius: 10px;
+            }
+            .dash-subcard-name .subcard-name-full {
+                display: none;
+            }
+            .dash-subcard-name .subcard-name-short {
+                display: inline;
+            }
+            .dash-subcard-val {
+                font-size: 1.05rem;
             }
             .dash-tag {
                 font-size: 0.72rem;
@@ -1211,7 +1318,47 @@
                 </div>
                 <div class="dash-pill-icon pill-blue" aria-hidden="true">📋</div>
             </div>
-            <div class="dash-metric" id="dash-kk-count">0</div>
+
+            <!-- Primary Large Metric: Total Case -->
+            <div class="dash-total-box">
+                <span class="dash-total-label" data-i18n="dash_total_cases_label">Jumlah Kes</span>
+                <div class="dash-metric" id="dash-kk-count">0</div>
+            </div>
+
+            <!-- 3-Column Clinic Micro-Grid -->
+            <div class="dash-subgrid">
+                <div class="dash-subcard subcard-kb" title="KK Kota Bharu">
+                    <div class="dash-subcard-header">
+                        <i class="dot dot-kb"></i>
+                        <span class="dash-subcard-name">
+                            <span class="subcard-name-full">KK Kota Bharu</span>
+                            <span class="subcard-name-short">KK KB</span>
+                        </span>
+                    </div>
+                    <div class="dash-subcard-val" id="dash-kk-kb-count">0</div>
+                </div>
+                <div class="dash-subcard subcard-kl" title="KK Kok Lanas">
+                    <div class="dash-subcard-header">
+                        <i class="dot dot-kl"></i>
+                        <span class="dash-subcard-name">
+                            <span class="subcard-name-full">KK Kok Lanas</span>
+                            <span class="subcard-name-short">KK KL</span>
+                        </span>
+                    </div>
+                    <div class="dash-subcard-val" id="dash-kk-kl-count">0</div>
+                </div>
+                <div class="dash-subcard subcard-pc" title="KK Pengkalan Chepa">
+                    <div class="dash-subcard-header">
+                        <i class="dot dot-pc"></i>
+                        <span class="dash-subcard-name">
+                            <span class="subcard-name-full">KK Pengkalan Chepa</span>
+                            <span class="subcard-name-short">KK PC</span>
+                        </span>
+                    </div>
+                    <div class="dash-subcard-val" id="dash-kk-pc-count">0</div>
+                </div>
+            </div>
+
             <div class="dash-card-footer">
                 <span class="dash-tag tag-blue" data-i18n="dash_kk_tag">Semua 3 KK</span>
             </div>
@@ -1226,7 +1373,47 @@
                 </div>
                 <div class="dash-pill-icon pill-green" aria-hidden="true">🦷</div>
             </div>
-            <div class="dash-metric" id="dash-kp-count">0</div>
+
+            <!-- Primary Large Metric: Total Case -->
+            <div class="dash-total-box">
+                <span class="dash-total-label" data-i18n="dash_total_cases_label">Jumlah Kes</span>
+                <div class="dash-metric" id="dash-kp-count">0</div>
+            </div>
+
+            <!-- 3-Column Clinic Micro-Grid -->
+            <div class="dash-subgrid">
+                <div class="dash-subcard subcard-kb" title="KP Kota Bharu">
+                    <div class="dash-subcard-header">
+                        <i class="dot dot-kb"></i>
+                        <span class="dash-subcard-name">
+                            <span class="subcard-name-full">KP Kota Bharu</span>
+                            <span class="subcard-name-short">KP KB</span>
+                        </span>
+                    </div>
+                    <div class="dash-subcard-val" id="dash-kp-kb-count">0</div>
+                </div>
+                <div class="dash-subcard subcard-kl" title="KP Kok Lanas">
+                    <div class="dash-subcard-header">
+                        <i class="dot dot-kl"></i>
+                        <span class="dash-subcard-name">
+                            <span class="subcard-name-full">KP Kok Lanas</span>
+                            <span class="subcard-name-short">KP KL</span>
+                        </span>
+                    </div>
+                    <div class="dash-subcard-val" id="dash-kp-kl-count">0</div>
+                </div>
+                <div class="dash-subcard subcard-pc" title="KP Pengkalan Chepa">
+                    <div class="dash-subcard-header">
+                        <i class="dot dot-pc"></i>
+                        <span class="dash-subcard-name">
+                            <span class="subcard-name-full">KP Pengkalan Chepa</span>
+                            <span class="subcard-name-short">KP PC</span>
+                        </span>
+                    </div>
+                    <div class="dash-subcard-val" id="dash-kp-pc-count">0</div>
+                </div>
+            </div>
+
             <div class="dash-card-footer">
                 <span class="dash-tag tag-green" data-i18n="dash_kp_tag">Semua 3 KP</span>
             </div>
@@ -2285,6 +2472,22 @@
             const kpCountEl = document.getElementById('dash-kp-count');
             if (kpCountEl) kpCountEl.textContent = totalKpScreened;
 
+            // Card 1: KK clinic breakdown numbers
+            const kkKbEl = document.getElementById('dash-kk-kb-count');
+            if (kkKbEl) kkKbEl.textContent = kkCounts['KK Kota Bharu'] || 0;
+            const kkKlEl = document.getElementById('dash-kk-kl-count');
+            if (kkKlEl) kkKlEl.textContent = kkCounts['KK Kok Lanas'] || 0;
+            const kkPcEl = document.getElementById('dash-kk-pc-count');
+            if (kkPcEl) kkPcEl.textContent = kkCounts['KK Pengkalan Chepa'] || 0;
+
+            // Card 2: KP clinic breakdown numbers
+            const kpKbEl = document.getElementById('dash-kp-kb-count');
+            if (kpKbEl) kpKbEl.textContent = kpCounts['KP Kota Bharu'] || 0;
+            const kpKlEl = document.getElementById('dash-kp-kl-count');
+            if (kpKlEl) kpKlEl.textContent = kpCounts['KP Kok Lanas'] || 0;
+            const kpPcEl = document.getElementById('dash-kp-pc-count');
+            if (kpPcEl) kpPcEl.textContent = kpCounts['KP Pengkalan Chepa'] || 0;
+
             // Update KK Chart
             if (chartKK) {
                 if (totalKkReferred === 0) {
@@ -2376,6 +2579,7 @@
                 // Monthly Dashboard
                 dash_section_title:   'Prestasi Bulanan',
                 dash_select_month_label: 'Bulan & Tahun:',
+                dash_total_cases_label: 'Jumlah Kes',
                 dash_month_sub:       'Bulan Ini',
                 dash_kk_ref_title:    'Kes Dirujuk KK',
                 dash_kp_scr_title:    'Kes Disaring KP',
@@ -2456,6 +2660,7 @@
                 // Monthly Dashboard
                 dash_section_title:   'Monthly Performance',
                 dash_select_month_label: 'Month & Year:',
+                dash_total_cases_label: 'Total Case',
                 dash_month_sub:       'This Month',
                 dash_kk_ref_title:    'Referred from KK',
                 dash_kp_scr_title:    'Screened at KP',
