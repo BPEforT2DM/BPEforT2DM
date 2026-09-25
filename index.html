@@ -197,6 +197,108 @@
             box-sizing: border-box;
         }
 
+        /* Dashboard Header Bar (Section title + Month Picker) */
+        .dashboard-header-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 43, 72, 0.05);
+            margin-bottom: 2px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .dash-header-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dash-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.2px;
+        }
+
+        .dash-section-badge {
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(0, 113, 227, 0.12), rgba(99, 102, 241, 0.12));
+            color: var(--accent-blue);
+            border: 1px solid rgba(0, 113, 227, 0.2);
+            letter-spacing: 0.3px;
+        }
+
+        .dash-header-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dash-picker-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .glass-select-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .glass-month-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 113, 227, 0.25);
+            border-radius: 12px;
+            padding: 6px 32px 6px 14px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(15, 43, 72, 0.05);
+            font-family: inherit;
+        }
+
+        .glass-month-select:hover {
+            background: #ffffff;
+            border-color: var(--accent-blue);
+            box-shadow: 0 3px 12px rgba(0, 113, 227, 0.12);
+        }
+
+        .glass-month-select:focus {
+            background: #ffffff;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.18);
+        }
+
+        .glass-select-wrapper .select-chevron {
+            position: absolute;
+            right: 12px;
+            pointer-events: none;
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+
         .dash-card {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -839,6 +941,29 @@
                 margin-bottom: 24px;
                 padding: 0 2px;
             }
+            .dashboard-header-bar {
+                padding: 10px 14px;
+                gap: 8px;
+            }
+            .dash-header-title-wrap {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .dash-section-title {
+                font-size: 0.95rem;
+            }
+            .dash-header-action {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .glass-select-wrapper {
+                flex: 1;
+            }
+            .glass-month-select {
+                width: 100%;
+                font-size: 0.8rem;
+                padding: 6px 28px 6px 10px;
+            }
             .dash-card {
                 padding: 14px;
                 border-radius: 16px;
@@ -1028,11 +1153,29 @@
 
     <!-- Interactive Monthly Dashboard -->
     <section class="dashboard-container" id="monthly-dashboard" aria-label="Monthly Dashboard">
+        <!-- Dashboard Header Bar: Title + Glassmorphic Month Picker -->
+        <div class="dashboard-header-bar">
+            <div class="dash-header-title-wrap">
+                <div class="dash-section-title">
+                    <span>📊</span>
+                    <span data-i18n="dash_section_title">Prestasi Bulanan</span>
+                </div>
+                <span class="dash-section-badge" id="dash-active-month-badge">September 2026</span>
+            </div>
+            <div class="dash-header-action">
+                <label for="dash-month-select" class="dash-picker-label" data-i18n="dash_select_month_label">Pilih Bulan:</label>
+                <div class="glass-select-wrapper">
+                    <select id="dash-month-select" class="glass-month-select" aria-label="Pilih Bulan"></select>
+                    <span class="select-chevron" aria-hidden="true">▾</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Card 1: Total KK Referrals (BPE Referred) -->
         <div class="dash-card">
             <div class="dash-card-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle" data-i18n="dash_month_sub">Bulan Ini</span>
+                    <span class="dash-card-subtitle dash-month-sub-label">Rekod September 2026</span>
                     <div class="dash-card-title" data-i18n="dash_kk_ref_title">Kes Dirujuk KK</div>
                 </div>
                 <div class="dash-pill-icon pill-blue" aria-hidden="true">📋</div>
@@ -1047,7 +1190,7 @@
         <div class="dash-card">
             <div class="dash-card-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle" data-i18n="dash_month_sub">Bulan Ini</span>
+                    <span class="dash-card-subtitle dash-month-sub-label">Rekod September 2026</span>
                     <div class="dash-card-title" data-i18n="dash_kp_scr_title">Kes Disaring KP</div>
                 </div>
                 <div class="dash-pill-icon pill-green" aria-hidden="true">🦷</div>
@@ -1062,7 +1205,7 @@
         <div class="dash-card champ-card-group">
             <div class="dash-card-header champ-group-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle" data-i18n="dash_month_sub">Bulan Ini</span>
+                    <span class="dash-card-subtitle dash-month-sub-label">Rekod September 2026</span>
                     <div class="dash-card-title champ-master-title">🏆 <span data-i18n="champ_master_title">Kejuaraan BPE</span></div>
                 </div>
                 <div class="dash-pill-icon pill-purple" aria-hidden="true">🏆</div>
@@ -1721,6 +1864,16 @@
         // =====================================================
         let chartKK = null;
         let chartKP = null;
+        let cachedScreeningsData = {};
+
+        function getCurrentYearMonth() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            return `${y}-${m}`;
+        }
+
+        let selectedDashboardMonth = getCurrentYearMonth();
 
         const latestDashboardStats = {
             kkTotal: 0,
@@ -1729,11 +1882,101 @@
             kpCounts: { 'KP Kota Bharu': 0, 'KP Kok Lanas': 0, 'KP Pengkalan Chepa': 0 }
         };
 
-        function getCurrentYearMonth() {
+        const MONTH_NAMES_BM = [
+            'Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun',
+            'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'
+        ];
+        const MONTH_NAMES_EN = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        function formatMonthName(yearMonth, lang) {
+            if (!yearMonth || typeof yearMonth !== 'string') return '';
+            const parts = yearMonth.split('-');
+            if (parts.length !== 2) return yearMonth;
+            const y = parts[0];
+            const mIdx = parseInt(parts[1], 10) - 1;
+            if (isNaN(mIdx) || mIdx < 0 || mIdx > 11) return yearMonth;
+            const names = (lang === 'bm') ? MONTH_NAMES_BM : MONTH_NAMES_EN;
+            return `${names[mIdx]} ${y}`;
+        }
+
+        function formatMonthSubLabel(yearMonth, lang) {
+            const mName = formatMonthName(yearMonth, lang);
+            if (lang === 'bm') {
+                return `Rekod ${mName}`;
+            }
+            return `${mName} Record`;
+        }
+
+        function updateDashboardMonthLabels() {
+            const activeMonth = selectedDashboardMonth || getCurrentYearMonth();
+            const subText = formatMonthSubLabel(activeMonth, currentLang);
+            const badgeText = formatMonthName(activeMonth, currentLang);
+
+            document.querySelectorAll('.dash-month-sub-label').forEach(el => {
+                el.textContent = subText;
+            });
+
+            const badgeEl = document.getElementById('dash-active-month-badge');
+            if (badgeEl) {
+                badgeEl.textContent = badgeText;
+            }
+        }
+
+        function populateDashboardMonthOptions(screeningsData) {
+            const selectEl = document.getElementById('dash-month-select');
+            if (!selectEl) return;
+
+            const monthsSet = new Set();
             const now = new Date();
-            const y = now.getFullYear();
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            return `${y}-${m}`;
+            const curY = now.getFullYear();
+
+            // Populate all 12 months for current year and previous year
+            for (let y = curY; y >= curY - 1; y--) {
+                for (let m = 12; m >= 1; m--) {
+                    monthsSet.add(`${y}-${String(m).padStart(2, '0')}`);
+                }
+            }
+
+            // Also inspect any historical records in Firebase data
+            const data = screeningsData || {};
+            ['kk', 'kp'].forEach(type => {
+                if (data[type]) {
+                    Object.keys(data[type]).forEach(clinic => {
+                        const recs = data[type][clinic] || {};
+                        Object.keys(recs).forEach(k => {
+                            const rec = recs[k];
+                            if (rec.tarikh && typeof rec.tarikh === 'string' && rec.tarikh.length >= 7) {
+                                monthsSet.add(rec.tarikh.substring(0, 7));
+                            } else if (rec.createdAt) {
+                                const d = new Date(rec.createdAt);
+                                if (!isNaN(d.getTime())) {
+                                    monthsSet.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Sort descending (newest month first)
+            const sortedMonths = Array.from(monthsSet).sort().reverse();
+
+            const curVal = selectedDashboardMonth || getCurrentYearMonth();
+            selectEl.innerHTML = '';
+            sortedMonths.forEach(ym => {
+                const opt = document.createElement('option');
+                opt.value = ym;
+                opt.textContent = formatMonthName(ym, currentLang);
+                if (ym === curVal) opt.selected = true;
+                selectEl.appendChild(opt);
+            });
+
+            if (!selectedDashboardMonth) {
+                selectedDashboardMonth = selectEl.value || getCurrentYearMonth();
+            }
         }
 
         function isRecordInMonth(rec, targetMonth) {
@@ -1912,8 +2155,8 @@
         }
 
         function updateMonthlyDashboard(screeningsData) {
-            const data = screeningsData || {};
-            const curMonth = getCurrentYearMonth();
+            const data = screeningsData || cachedScreeningsData || {};
+            const targetMonth = selectedDashboardMonth || getCurrentYearMonth();
 
             // 1. Calculate KK Referred Totals (Card 1 & Card 3)
             let totalKkReferred = 0;
@@ -1935,7 +2178,7 @@
                     let clinicCount = 0;
                     Object.keys(clinicRecords).forEach(k => {
                         const rec = clinicRecords[k];
-                        if (isRecordInMonth(rec, curMonth)) {
+                        if (isRecordInMonth(rec, targetMonth)) {
                             if (rec.rujukan === 'Dirujuk') {
                                 clinicCount++;
                                 totalKkReferred++;
@@ -1966,7 +2209,7 @@
                     let clinicCount = 0;
                     Object.keys(clinicRecords).forEach(k => {
                         const rec = clinicRecords[k];
-                        if (isRecordInMonth(rec, curMonth)) {
+                        if (isRecordInMonth(rec, targetMonth)) {
                             clinicCount++;
                             totalKpScreened++;
                         }
@@ -2028,14 +2271,25 @@
                 chartKP.update();
             }
 
-            // Render competitive badges
+            // Render competitive badges and active month labels
             renderDashboardBadges();
+            updateDashboardMonthLabels();
         }
 
         function listenToDashboard() {
+            const monthSelect = document.getElementById('dash-month-select');
+            if (monthSelect && !monthSelect.dataset.listenerAttached) {
+                monthSelect.dataset.listenerAttached = 'true';
+                monthSelect.addEventListener('change', function() {
+                    selectedDashboardMonth = this.value;
+                    updateMonthlyDashboard(cachedScreeningsData);
+                });
+            }
+
             db.ref('screenings').on('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                updateMonthlyDashboard(data);
+                cachedScreeningsData = snapshot.val() || {};
+                populateDashboardMonthOptions(cachedScreeningsData);
+                updateMonthlyDashboard(cachedScreeningsData);
             });
         }
 
@@ -2053,6 +2307,8 @@
                 kp_title:         'Klinik Pergigian (Pergigian)',
                 doc_title:        'Surat Rujukan',
                 // Monthly Dashboard
+                dash_section_title:   'Prestasi Bulanan',
+                dash_select_month_label: 'Pilih Bulan:',
                 dash_month_sub:       'Bulan Ini',
                 dash_kk_ref_title:    'Kes Dirujuk KK',
                 dash_kp_scr_title:    'Kes Disaring KP',
@@ -2131,6 +2387,8 @@
                 kp_title:         'Dental Clinic (Dental)',
                 doc_title:        'Referral Letter',
                 // Monthly Dashboard
+                dash_section_title:   'Monthly Performance',
+                dash_select_month_label: 'Select Month:',
                 dash_month_sub:       'This Month',
                 dash_kk_ref_title:    'Referred from KK',
                 dash_kp_scr_title:    'Screened at KP',
@@ -2219,8 +2477,10 @@
                     switcher.classList.remove('active-bm');
                 }
             }
-            // Update dashboard badges dynamically
+            // Update dashboard badges and month selector/labels dynamically
             renderDashboardBadges();
+            populateDashboardMonthOptions(cachedScreeningsData);
+            updateDashboardMonthLabels();
         }
 
         function toggleLang() {
