@@ -790,6 +790,10 @@
             border-radius: 12px;
         }
 
+        /* Responsive value spans — mobile alt hidden by default */
+        .val-mobile { display: none; }
+        .val-desktop { display: inline; }
+
         .data-table {
             width: 100%;
             border-collapse: separate;
@@ -1200,6 +1204,27 @@
             .dash-card {
                 overflow: visible;
             }
+
+            /* ── Monthly Record table: compact for mobile ── */
+            .data-table {
+                font-size: 0.78rem;
+            }
+            .data-table th,
+            .data-table td {
+                padding: 6px 4px;
+            }
+            .badge {
+                padding: 3px 6px;
+                font-size: 0.72rem;
+            }
+            .btn-padam {
+                padding: 4px 8px;
+                font-size: 0.72rem;
+                border-radius: 8px;
+            }
+            /* Show short-form on mobile, hide full-form */
+            .val-desktop { display: none !important; }
+            .val-mobile  { display: inline !important; }
         }
 
         /* Printable Area */
@@ -1771,6 +1796,19 @@
         let kkData = [];
         let kpData = [];
 
+        // --- MOBILE DISPLAY HELPERS ---
+        // These ONLY affect visual display; raw data remains untouched for exports.
+        function formatMobileName(fullName) {
+            if (!fullName) return '';
+            const parts = fullName.trim().split(/\s+/);
+            return parts.slice(0, 2).join(' ');
+        }
+        function formatMobileIC(ic) {
+            if (!ic) return '';
+            const cleaned = ic.toString().trim();
+            return cleaned.slice(-4);
+        }
+
         // --- KLINIK KESIHATAN REALTIME LISTENERS & LOGIC ---
         function listenToKK(clinicId) {
             if (currentKkClinic) {
@@ -1811,8 +1849,14 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${patient.tarikh}</td>
-                    <td style="font-weight: 500;">${patient.nama}</td>
-                    <td>${patient.ic}</td>
+                    <td style="font-weight: 500;">
+                        <span class="val-desktop">${patient.nama}</span>
+                        <span class="val-mobile">${formatMobileName(patient.nama)}</span>
+                    </td>
+                    <td>
+                        <span class="val-desktop">${patient.ic}</span>
+                        <span class="val-mobile">${formatMobileIC(patient.ic)}</span>
+                    </td>
                     <td><span class="badge ${statusClass}">${patient.rujukan}</span></td>
                     <td>
                         <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kk">${t('btn_padam')}</button>
@@ -1960,8 +2004,14 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${patient.tarikh}</td>
-                    <td style="font-weight: 500;">${patient.nama}</td>
-                    <td>${patient.ic}</td>
+                    <td style="font-weight: 500;">
+                        <span class="val-desktop">${patient.nama}</span>
+                        <span class="val-mobile">${formatMobileName(patient.nama)}</span>
+                    </td>
+                    <td>
+                        <span class="val-desktop">${patient.ic}</span>
+                        <span class="val-mobile">${formatMobileIC(patient.ic)}</span>
+                    </td>
                     <td><span class="badge completed">${patient.saringan}</span></td>
                     <td>
                         <button class="btn-padam" data-key="${patient.firebaseId}" data-clinic="${clinicId}" data-module="kp">${t('btn_padam')}</button>
