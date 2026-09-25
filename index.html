@@ -245,13 +245,20 @@
         .dash-header-action {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .dash-picker-label {
             font-size: 0.82rem;
             font-weight: 600;
             color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .dash-selectors-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .glass-select-wrapper {
@@ -267,7 +274,7 @@
             background: rgba(255, 255, 255, 0.85);
             border: 1px solid rgba(0, 113, 227, 0.25);
             border-radius: 12px;
-            padding: 6px 32px 6px 14px;
+            padding: 6px 30px 6px 12px;
             font-size: 0.84rem;
             font-weight: 600;
             color: #1d1d1f;
@@ -276,6 +283,14 @@
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(15, 43, 72, 0.05);
             font-family: inherit;
+        }
+
+        .glass-select-month {
+            min-width: 125px;
+        }
+
+        .glass-select-year {
+            min-width: 85px;
         }
 
         .glass-month-select:hover {
@@ -292,7 +307,7 @@
 
         .glass-select-wrapper .select-chevron {
             position: absolute;
-            right: 12px;
+            right: 10px;
             pointer-events: none;
             font-size: 0.75rem;
             color: var(--accent-blue);
@@ -954,15 +969,25 @@
             }
             .dash-header-action {
                 width: 100%;
-                justify-content: space-between;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+            .dash-selectors-row {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
             }
             .glass-select-wrapper {
-                flex: 1;
+                width: 100%;
             }
             .glass-month-select {
                 width: 100%;
+                min-width: 0;
                 font-size: 0.8rem;
-                padding: 6px 28px 6px 10px;
+                padding: 6px 24px 6px 10px;
             }
             .dash-card {
                 padding: 14px;
@@ -1163,10 +1188,16 @@
                 <span class="dash-section-badge" id="dash-active-month-badge">September 2026</span>
             </div>
             <div class="dash-header-action">
-                <label for="dash-month-select" class="dash-picker-label" data-i18n="dash_select_month_label">Pilih Bulan:</label>
-                <div class="glass-select-wrapper">
-                    <select id="dash-month-select" class="glass-month-select" aria-label="Pilih Bulan"></select>
-                    <span class="select-chevron" aria-hidden="true">▾</span>
+                <span class="dash-picker-label" data-i18n="dash_select_month_label">Bulan & Tahun:</span>
+                <div class="dash-selectors-row">
+                    <div class="glass-select-wrapper">
+                        <select id="dash-select-month" class="glass-month-select glass-select-month" aria-label="Pilih Bulan"></select>
+                        <span class="select-chevron" aria-hidden="true">▾</span>
+                    </div>
+                    <div class="glass-select-wrapper">
+                        <select id="dash-select-year" class="glass-month-select glass-select-year" aria-label="Pilih Tahun"></select>
+                        <span class="select-chevron" aria-hidden="true">▾</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1175,7 +1206,7 @@
         <div class="dash-card">
             <div class="dash-card-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle dash-month-sub-label">Rekod September 2026</span>
+                    <span class="dash-card-subtitle dash-month-sub-label">September 2026</span>
                     <div class="dash-card-title" data-i18n="dash_kk_ref_title">Kes Dirujuk KK</div>
                 </div>
                 <div class="dash-pill-icon pill-blue" aria-hidden="true">📋</div>
@@ -1190,7 +1221,7 @@
         <div class="dash-card">
             <div class="dash-card-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle dash-month-sub-label">Rekod September 2026</span>
+                    <span class="dash-card-subtitle dash-month-sub-label">September 2026</span>
                     <div class="dash-card-title" data-i18n="dash_kp_scr_title">Kes Disaring KP</div>
                 </div>
                 <div class="dash-pill-icon pill-green" aria-hidden="true">🦷</div>
@@ -1205,7 +1236,7 @@
         <div class="dash-card champ-card-group">
             <div class="dash-card-header champ-group-header">
                 <div class="dash-card-header-text">
-                    <span class="dash-card-subtitle dash-month-sub-label">Rekod September 2026</span>
+                    <span class="dash-card-subtitle dash-month-sub-label">September 2026</span>
                     <div class="dash-card-title champ-master-title">🏆 <span data-i18n="champ_master_title">Kejuaraan BPE</span></div>
                 </div>
                 <div class="dash-pill-icon pill-purple" aria-hidden="true">🏆</div>
@@ -1873,6 +1904,7 @@
             return `${y}-${m}`;
         }
 
+        let userSelectedDashboardMonth = null;
         let selectedDashboardMonth = getCurrentYearMonth();
 
         const latestDashboardStats = {
@@ -1903,11 +1935,7 @@
         }
 
         function formatMonthSubLabel(yearMonth, lang) {
-            const mName = formatMonthName(yearMonth, lang);
-            if (lang === 'bm') {
-                return `Rekod ${mName}`;
-            }
-            return `${mName} Record`;
+            return formatMonthName(yearMonth, lang);
         }
 
         function updateDashboardMonthLabels() {
@@ -1926,21 +1954,43 @@
         }
 
         function populateDashboardMonthOptions(screeningsData) {
-            const selectEl = document.getElementById('dash-month-select');
-            if (!selectEl) return;
+            const monthSelect = document.getElementById('dash-select-month');
+            const yearSelect = document.getElementById('dash-select-year');
+            if (!monthSelect || !yearSelect) return;
 
-            const monthsSet = new Set();
-            const now = new Date();
-            const curY = now.getFullYear();
-
-            // Populate all 12 months for current year and previous year
-            for (let y = curY; y >= curY - 1; y--) {
-                for (let m = 12; m >= 1; m--) {
-                    monthsSet.add(`${y}-${String(m).padStart(2, '0')}`);
-                }
+            // Make sure default is strictly the current month unless explicitly selected by user
+            const currentYm = getCurrentYearMonth();
+            let targetYm = userSelectedDashboardMonth || currentYm;
+            if (targetYm < '2025-01') {
+                targetYm = (currentYm >= '2025-01') ? currentYm : '2025-01';
             }
 
-            // Also inspect any historical records in Firebase data
+            const parts = targetYm.split('-');
+            const targetYear = parts[0] || '2026';
+            const targetMonth = parts[1] || '09';
+
+            // 1. Populate Months (01 to 12)
+            const monthNames = (currentLang === 'bm') ? MONTH_NAMES_BM : MONTH_NAMES_EN;
+            monthSelect.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                const mVal = String(i + 1).padStart(2, '0');
+                const opt = document.createElement('option');
+                opt.value = mVal;
+                opt.textContent = monthNames[i];
+                monthSelect.appendChild(opt);
+            }
+            monthSelect.value = targetMonth;
+
+            // 2. Populate Years (2025 until 2030 onwards)
+            const now = new Date();
+            const curY = now.getFullYear();
+            const yearsSet = new Set();
+            for (let y = 2025; y <= 2030; y++) {
+                yearsSet.add(y);
+            }
+            if (curY >= 2025) yearsSet.add(curY);
+
+            // Also inspect any historical records in Firebase data (>= 2025 only)
             const data = screeningsData || {};
             ['kk', 'kp'].forEach(type => {
                 if (data[type]) {
@@ -1948,35 +1998,39 @@
                         const recs = data[type][clinic] || {};
                         Object.keys(recs).forEach(k => {
                             const rec = recs[k];
-                            if (rec.tarikh && typeof rec.tarikh === 'string' && rec.tarikh.length >= 7) {
-                                monthsSet.add(rec.tarikh.substring(0, 7));
+                            let y = null;
+                            if (rec.tarikh && typeof rec.tarikh === 'string' && rec.tarikh.length >= 4) {
+                                y = parseInt(rec.tarikh.substring(0, 4), 10);
                             } else if (rec.createdAt) {
                                 const d = new Date(rec.createdAt);
                                 if (!isNaN(d.getTime())) {
-                                    monthsSet.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                                    y = d.getFullYear();
                                 }
+                            }
+                            if (y && !isNaN(y) && y >= 2025) {
+                                yearsSet.add(y);
                             }
                         });
                     });
                 }
             });
 
-            // Sort descending (newest month first)
-            const sortedMonths = Array.from(monthsSet).sort().reverse();
-
-            const curVal = selectedDashboardMonth || getCurrentYearMonth();
-            selectEl.innerHTML = '';
-            sortedMonths.forEach(ym => {
+            // Sort years (2025 to 2030)
+            const sortedYears = Array.from(yearsSet).sort((a, b) => a - b);
+            yearSelect.innerHTML = '';
+            sortedYears.forEach(y => {
                 const opt = document.createElement('option');
-                opt.value = ym;
-                opt.textContent = formatMonthName(ym, currentLang);
-                if (ym === curVal) opt.selected = true;
-                selectEl.appendChild(opt);
+                opt.value = String(y);
+                opt.textContent = String(y);
+                yearSelect.appendChild(opt);
             });
 
-            if (!selectedDashboardMonth) {
-                selectedDashboardMonth = selectEl.value || getCurrentYearMonth();
+            yearSelect.value = targetYear;
+            if (!yearSelect.value && sortedYears.length > 0) {
+                yearSelect.value = String(sortedYears[0]);
             }
+
+            selectedDashboardMonth = `${yearSelect.value}-${monthSelect.value}`;
         }
 
         function isRecordInMonth(rec, targetMonth) {
@@ -2277,13 +2331,26 @@
         }
 
         function listenToDashboard() {
-            const monthSelect = document.getElementById('dash-month-select');
+            const monthSelect = document.getElementById('dash-select-month');
+            const yearSelect = document.getElementById('dash-select-year');
+
+            function handleSelectorChange() {
+                const m = document.getElementById('dash-select-month');
+                const y = document.getElementById('dash-select-year');
+                if (m && y && m.value && y.value) {
+                    userSelectedDashboardMonth = `${y.value}-${m.value}`;
+                    selectedDashboardMonth = userSelectedDashboardMonth;
+                    updateMonthlyDashboard(cachedScreeningsData);
+                }
+            }
+
             if (monthSelect && !monthSelect.dataset.listenerAttached) {
                 monthSelect.dataset.listenerAttached = 'true';
-                monthSelect.addEventListener('change', function() {
-                    selectedDashboardMonth = this.value;
-                    updateMonthlyDashboard(cachedScreeningsData);
-                });
+                monthSelect.addEventListener('change', handleSelectorChange);
+            }
+            if (yearSelect && !yearSelect.dataset.listenerAttached) {
+                yearSelect.dataset.listenerAttached = 'true';
+                yearSelect.addEventListener('change', handleSelectorChange);
             }
 
             db.ref('screenings').on('value', (snapshot) => {
@@ -2308,7 +2375,7 @@
                 doc_title:        'Surat Rujukan',
                 // Monthly Dashboard
                 dash_section_title:   'Prestasi Bulanan',
-                dash_select_month_label: 'Pilih Bulan:',
+                dash_select_month_label: 'Bulan & Tahun:',
                 dash_month_sub:       'Bulan Ini',
                 dash_kk_ref_title:    'Kes Dirujuk KK',
                 dash_kp_scr_title:    'Kes Disaring KP',
@@ -2388,7 +2455,7 @@
                 doc_title:        'Referral Letter',
                 // Monthly Dashboard
                 dash_section_title:   'Monthly Performance',
-                dash_select_month_label: 'Select Month:',
+                dash_select_month_label: 'Month & Year:',
                 dash_month_sub:       'This Month',
                 dash_kk_ref_title:    'Referred from KK',
                 dash_kp_scr_title:    'Screened at KP',
