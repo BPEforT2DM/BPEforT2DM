@@ -475,9 +475,8 @@
             font-weight: 600;
             color: #2c2c2e;
             line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-word;
         }
 
         .dash-subcard-name .subcard-name-short {
@@ -1144,6 +1143,63 @@
                 gap: 6px;
                 font-size: 0.66rem;
             }
+
+            /* ── Title: two-line split on mobile ── */
+            html, body {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+            .main-title {
+                font-size: 1.55rem;
+                line-height: 1.25;
+                margin-bottom: 18px;
+                letter-spacing: -0.3px;
+            }
+            .title-sep {
+                display: block;
+                height: 0;
+                overflow: hidden;
+                line-height: 0;
+                font-size: 0;
+            }
+            .title-line1,
+            .title-line2 {
+                display: block;
+                text-align: center;
+            }
+
+            /* ── Clinic rows: show short names, hide full names ── */
+            .dash-subcard-name .subcard-name-full {
+                display: none;
+            }
+            .dash-subcard-name .subcard-name-short {
+                display: inline;
+            }
+            .dash-subcard-name {
+                font-size: 0.72rem;
+                white-space: normal;
+                word-break: normal;
+                overflow: visible;
+                text-overflow: unset;
+            }
+            .dash-subcard {
+                padding: 6px 10px;
+            }
+
+            /* ── Eliminate truncation across cards/labels ── */
+            .dash-card-title,
+            .dash-card-subtitle,
+            .dash-total-label,
+            .dash-section-title,
+            .dash-section-badge {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: unset;
+                word-break: break-word;
+            }
+            .dash-card {
+                overflow: visible;
+            }
         }
 
         /* Printable Area */
@@ -1265,7 +1321,7 @@
         </div>
     </header>
 
-    <h1 class="main-title">BPE T2DM Screening Tracker</h1>
+    <h1 class="main-title"><span class="title-line1">BPE T2DM</span><span class="title-sep"> </span><span class="title-line2">Screening Tracker</span></h1>
 
     <!-- Interactive Monthly Dashboard -->
     <section class="dashboard-container" id="monthly-dashboard" aria-label="Monthly Dashboard">
