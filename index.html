@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1365,7 +1365,7 @@
         </nav>
 
         <div class="lang-switch-container">
-            <div class="lang-pill-switch" id="lang-switch" onclick="toggleLang()" role="button" aria-label="Toggle Language EN / BM">
+            <div class="lang-pill-switch active-bm" id="lang-switch" onclick="toggleLang()" role="button" aria-label="Toggle Language EN / BM">
                 <div class="lang-pill-slider"></div>
                 <span class="lang-pill-opt opt-en">EN</span>
                 <span class="lang-pill-opt opt-bm">BM</span>
@@ -1560,7 +1560,7 @@
                 <div class="form-container">
                     <form id="kk-screening-form">
                         <div class="form-group">
-                            <label>1. <span data-i18n="label_tarikh">Tarikh Kedatangan</span></label>
+                            <label>1. <span data-i18n="label_tarikh_kk">Tarikh Lawatan</span></label>
                             <input type="date" id="kk-tarikh" class="form-control" required>
                         </div>
                         <div class="form-group">
@@ -1568,20 +1568,20 @@
                             <input type="text" id="kk-nama" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <div class="form-group">
-                            <label>3. <span data-i18n="label_ic">No. IC Pesakit</span></label>
-                            <input type="text" id="kk-ic" class="form-control" pattern="[0-9]*" title="Numbers only" required>
+                            <label>3. <span data-i18n="label_ic">No IC Pesakit (4 Digit Terakhir)</span></label>
+                            <input type="text" id="kk-ic" class="form-control" inputmode="numeric" pattern="\d{4}" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4);" required>
                         </div>
                         <div class="form-group">
-                            <label>4. <span data-i18n="label_rujukan_kk">Rujukan untuk Saringan BPE</span></label>
+                            <label>4. <span data-i18n="label_telefon">No. Telefon</span></label>
+                            <input type="tel" id="kk-telefon" class="form-control" inputmode="numeric" maxlength="12" oninput="formatPhoneInput(this)" required>
+                        </div>
+                        <div class="form-group">
+                            <label>5. <span data-i18n="label_rujukan_kk">Rujukan untuk Saringan BPE</span></label>
                             <select id="kk-rujukan" class="form-control" required>
                                 <option value="" data-i18n="select_please">Sila Pilih...</option>
                                 <option value="Dirujuk" data-i18n="opt_dirujuk">Dirujuk</option>
                                 <option value="Enggan" data-i18n="opt_enggan">Enggan</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label>5. <span data-i18n="label_pegawai">Nama Pegawai</span></label>
-                            <input type="text" id="kk-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <button type="submit" class="btn" data-i18n="btn_submit">Simpan Rekod</button>
                     </form>
@@ -1636,23 +1636,17 @@
                         </div>
 
                         <div class="form-group">
-                            <label>3. <span data-i18n="label_ic">No. IC Pesakit</span></label>
-                            <input type="text" id="f-ic" class="form-control" pattern="[0-9]*" title="Numbers only" required>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group form-col">
-                                <label>4. <span data-i18n="label_rn">No. RN</span></label>
-                                <input type="text" id="f-rn" class="form-control" pattern="[0-9]*" title="Numbers only" required>
-                            </div>
-                            <div class="form-group form-col">
-                                <label>5. <span data-i18n="label_umur">Umur</span></label>
-                                <input type="text" id="f-umur" class="form-control" pattern="[0-9]*" title="Numbers only" required>
-                            </div>
+                            <label>3. <span data-i18n="label_ic">No IC Pesakit (4 Digit Terakhir)</span></label>
+                            <input type="text" id="f-ic" class="form-control" inputmode="numeric" pattern="\d{4}" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4);" required>
                         </div>
 
                         <div class="form-group">
-                            <label>6. <span data-i18n="label_saringan">Saringan Penyakit Periodontium dan Peri-implan</span></label>
+                            <label>4. <span data-i18n="label_umur">Umur</span></label>
+                            <input type="text" id="f-umur" class="form-control" pattern="[0-9]*" title="Numbers only" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>5. <span data-i18n="label_saringan">Saringan Penyakit Periodontium dan Peri-implan</span></label>
                             <select id="f-saringan" class="form-control" required>
                                 <option value="" data-i18n="select_please">Sila Pilih...</option>
                                 <optgroup label="Non-Periodontitis">
@@ -1668,7 +1662,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>7. <span data-i18n="label_pakar_perio">Rujukan Kepada Pakar Periodontik</span></label>
+                            <label>6. <span data-i18n="label_pakar_perio">Rujukan Kepada Pakar Periodontik</span></label>
                             <select id="f-pakar-perio" class="form-control" required>
                                 <option value="" data-i18n="select_please">Sila Pilih...</option>
                                 <option value="Ya" data-i18n="opt_ya">Ya</option>
@@ -1678,7 +1672,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>8. <span data-i18n="label_pakar_lain">Rujukan Kepada Pakar Lain</span></label>
+                            <label>7. <span data-i18n="label_pakar_lain">Rujukan Kepada Pakar Lain</span></label>
                             <div class="checkbox-group">
                                 <label><input type="checkbox" name="f-pakar-lain" value="UPPKA"> UPPKA</label>
                                 <label><input type="checkbox" name="f-pakar-lain" value="SCD"> SCD</label>
@@ -1687,7 +1681,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>9. <span data-i18n="label_selesai">Kes Selesai Periodontium</span></label>
+                            <label>8. <span data-i18n="label_selesai">Kes Selesai Periodontium</span></label>
                             <div class="radio-group">
                                 <label><input type="radio" name="f-selesai" value="Ya" required> <span data-i18n="opt_ya">Ya</span></label>
                                 <label><input type="radio" name="f-selesai" value="Tidak" required> <span data-i18n="opt_tidak">Tidak</span></label>
@@ -1695,7 +1689,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>10. <span data-i18n="label_pegawai">Nama Pegawai</span></label>
+                            <label>9. <span data-i18n="label_pegawai">Nama Pegawai</span></label>
                             <input type="text" id="f-pegawai" class="form-control" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
 
@@ -1842,6 +1836,17 @@
             const cleaned = ic.toString().trim();
             return cleaned.slice(-4);
         }
+        function formatPhoneInput(el) {
+            let digits = el.value.replace(/\D/g, '');
+            if (digits.length > 11) {
+                digits = digits.slice(0, 11);
+            }
+            if (digits.length > 3) {
+                el.value = digits.slice(0, 3) + '-' + digits.slice(3);
+            } else {
+                el.value = digits;
+            }
+        }
 
         // --- KLINIK KESIHATAN REALTIME LISTENERS & LOGIC ---
         function listenToKK(clinicId) {
@@ -1929,6 +1934,23 @@
                 return;
             }
 
+            const icInput = document.getElementById('kk-ic');
+            const icVal = icInput.value.trim();
+            if (!/^\d{4}$/.test(icVal)) {
+                alert(t('alert_invalid_ic'));
+                icInput.focus();
+                return;
+            }
+
+            const telInput = document.getElementById('kk-telefon');
+            const telVal = telInput ? telInput.value.trim() : '';
+            const rawDigits = telVal.replace(/\D/g, '');
+            if (rawDigits.length < 9 || rawDigits.length > 11) {
+                alert(t('alert_invalid_phone'));
+                if (telInput) telInput.focus();
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = t('btn_saving');
 
@@ -1936,9 +1958,9 @@
                 clinicId: clinicId,
                 tarikh: document.getElementById('kk-tarikh').value,
                 nama: document.getElementById('kk-nama').value,
-                ic: document.getElementById('kk-ic').value,
+                ic: icVal,
+                telefon: telVal,
                 rujukan: document.getElementById('kk-rujukan').value,
-                pegawai: document.getElementById('kk-pegawai').value,
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
 
@@ -1984,11 +2006,11 @@
             
             const exportData = patients.map((p, index) => ({
                 "No.": index + 1,
-                "Tarikh Kedatangan": p.tarikh,
+                "Tarikh Lawatan": p.tarikh,
                 "Nama Penuh Pesakit": p.nama,
                 "No. IC Pesakit": p.ic,
-                "Rujukan BPE": p.rujukan,
-                "Nama Pegawai": p.pegawai || ""
+                "No. Telefon": p.telefon || "",
+                "Rujukan BPE": p.rujukan
             }));
             
             const ws = XLSX.utils.json_to_sheet(exportData);
@@ -2085,6 +2107,14 @@
                 return;
             }
 
+            const icInput = document.getElementById('f-ic');
+            const icVal = icInput.value.trim();
+            if (!/^\d{4}$/.test(icVal)) {
+                alert(t('alert_invalid_ic'));
+                icInput.focus();
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = t('btn_saving');
 
@@ -2095,8 +2125,7 @@
                 clinicId: clinicId,
                 tarikh: document.getElementById('f-tarikh').value,
                 nama: document.getElementById('f-nama').value,
-                ic: document.getElementById('f-ic').value,
-                rn: document.getElementById('f-rn').value,
+                ic: icVal,
                 umur: document.getElementById('f-umur').value,
                 saringan: document.getElementById('f-saringan').value,
                 pakarPerio: document.getElementById('f-pakar-perio').value,
@@ -2153,7 +2182,6 @@
                 "Tarikh Kedatangan": p.tarikh,
                 "Nama Penuh Pesakit": p.nama,
                 "No. IC Pesakit": p.ic,
-                "No RN": p.rn,
                 "Umur": p.umur,
                 "Saringan Penyakit Periodontium": p.saringan,
                 "Rujukan Pakar Periodontik": p.pakarPerio,
@@ -2710,9 +2738,11 @@
                 // Clinic select placeholder
                 select_clinic:    '-- Sila Pilih Klinik --',
                 // Form labels
+                label_tarikh_kk:  'Tarikh Lawatan',
                 label_tarikh:     'Tarikh Kedatangan',
                 label_nama:       'Nama Penuh Pesakit',
-                label_ic:         'No. IC Pesakit',
+                label_ic:         'No IC Pesakit (4 Digit Terakhir)',
+                label_telefon:    'No. Telefon',
                 label_rujukan_kk: 'Rujukan untuk Saringan BPE',
                 label_pegawai:    'Nama Pegawai',
                 label_rn:         'No. RN',
@@ -2754,6 +2784,8 @@
                 btn_padam:        'Padam',
                 alert_no_clinic_kk: 'Sila pilih Klinik Kesihatan terlebih dahulu!',
                 alert_no_clinic_kp: 'Sila pilih Klinik Pergigian terlebih dahulu!',
+                alert_invalid_ic: 'Sila masukkan tepat 4 digit No. IC pesakit!',
+                alert_invalid_phone: 'Sila masukkan nombor telefon yang sah!',
                 alert_save_ok:    'Rekod berjaya disimpan!',
                 alert_save_fail:  'Gagal menyimpan rekod: ',
                 alert_net_fail:   'Ralat Rangkaian/Database: ',
@@ -2791,9 +2823,11 @@
                 dash_cases_suffix:    ' cases',
                 // Clinic select placeholder
                 select_clinic:    '-- Select a Clinic --',
+                label_tarikh_kk:  'Date of Visit',
                 label_tarikh:     'Date of Visit',
                 label_nama:       'Patient Full Name',
-                label_ic:         'Patient IC No.',
+                label_ic:         'Patient IC No (Last 4 digits)',
+                label_telefon:    'Phone No.',
                 label_rujukan_kk: 'Referral for BPE Screening',
                 label_pegawai:    'Officer Name',
                 label_rn:         'RN No.',
@@ -2830,6 +2864,8 @@
                 btn_padam:        'Delete',
                 alert_no_clinic_kk: 'Please select a Health Clinic first!',
                 alert_no_clinic_kp: 'Please select a Dental Clinic first!',
+                alert_invalid_ic: 'Please enter exactly 4 digits for Patient IC No!',
+                alert_invalid_phone: 'Please enter a valid phone number!',
                 alert_save_ok:    'Record saved successfully!',
                 alert_save_fail:  'Failed to save record: ',
                 alert_net_fail:   'Network/Database Error: ',
@@ -2843,7 +2879,8 @@
         };
 
         // Active language — default BM, persisted in localStorage
-        let currentLang = localStorage.getItem('bpe_lang') || 'bm';
+        const savedLang = localStorage.getItem('bpe_lang');
+        let currentLang = (savedLang === 'en' || savedLang === 'bm') ? savedLang : 'bm';
 
         function t(key) {
             return (i18n[currentLang] && i18n[currentLang][key]) || key;
@@ -2858,6 +2895,15 @@
                     el.textContent = dict[key];
                 }
             });
+            // Update all [data-i18n-placeholder] elements
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key] !== undefined) {
+                    el.placeholder = dict[key];
+                }
+            });
+            // Update html lang attribute
+            document.documentElement.lang = currentLang === 'bm' ? 'ms' : 'en';
             // Update the pill switch state
             const switcher = document.getElementById('lang-switch');
             if (switcher) {
